@@ -114,7 +114,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <MASM Include="Genetics.asm" />
     <MASM Include="Source.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Genetics.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

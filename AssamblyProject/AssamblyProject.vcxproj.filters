@@ -18,5 +18,13 @@
     <MASM Include="Source.asm">
       <Filter>Source Files</Filter>
     </MASM>
+    <MASM Include="Genetics.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Genetics.inc">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

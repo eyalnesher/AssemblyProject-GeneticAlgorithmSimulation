@@ -5,6 +5,9 @@ include Genetics.inc
 		
 	one dword 1
 
+	screenSizeX equ 1000
+	screenSizeY equ 600
+
 
 .code
 
@@ -326,10 +329,10 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			initLoop:
 			
 				cmp ecx, matingpoolSize
-					jge exitBallLoop
+					jae exitBallLoop
 				cvtsi2sd xmm3, edx
-				ucomisd xmm3, xmm2
-					jge exitBallLoop
+				comisd xmm3, xmm2
+					jae exitBallLoop
 				invoke getElementInArray, pBalls, edi, Sizeof(Ball)
 				invoke putElementInArray, esi, pMatingpool, ecx, Sizeof(Ball)
 				inc ecx

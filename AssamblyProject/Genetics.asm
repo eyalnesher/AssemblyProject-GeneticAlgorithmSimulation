@@ -183,7 +183,7 @@ copyData proc pSource: dword, pDest: dword, dataLength: dword
 
 	xor ebx, ebx
 	mov eax, pSource
-	mov esi, pDest
+	mov edx, pDest
 
 	copyingLoop:
 		cmp ebx, dataLength
@@ -325,7 +325,6 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			
 			; Initializing the mating pool
 			xor edx, edx
-			mov edi, esi
 			initLoop:
 			
 				cmp ecx, matingpoolSize
@@ -333,7 +332,6 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 				cvtsi2sd xmm3, edx
 				comisd xmm3, xmm2
 					jae exitBallLoop
-				invoke getElementInArray, pBalls, edi, Sizeof(Ball)
 				invoke putElementInArray, esi, pMatingpool, ecx, Sizeof(Ball)
 				inc ecx
 				inc edx

@@ -378,9 +378,9 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	invoke random, edx, ebx
 
 	; Making a new child
-	mov ebx, ebp
+	lea ebx, (Ball ptr [esp]).location
 	invoke copyData, pLocation, ebx, SizeOf(Vector)
-	add ebx, Sizeof(Vector)
+	lea ebx, (Ball ptr [esp]).forces1
 	invoke copyData, pParent1, ebx, eax
 	mov edx, dnaLength
 	sub edx, eax
@@ -433,6 +433,9 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 
 		; Crossover
 		invoke crossover, ecx, esi, dnaLength, pArray, edx, pLocation
+		
+		inc edx
+		jmp selectionLoop
 
 	exitNaturalSelection:
 		pop esi

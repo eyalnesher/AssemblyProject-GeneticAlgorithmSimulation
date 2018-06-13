@@ -9,6 +9,7 @@ Sleep proto :dword
 
 .const
 
+	location Vector <200, 300>
 	target Vector <900, 374>
 
 	startRange dword -15
@@ -19,7 +20,7 @@ Sleep proto :dword
 
 	arrayLength equ 100
 	matingpoolLength equ 100
-	lifeSpan equ 10	
+	lifeSpan equ 100
 
 
 .data
@@ -29,7 +30,6 @@ Sleep proto :dword
 	; Pictures
 	pimg Img<>
 	targetImg Img<>
-	location Vector <200, 300>
 
 	balls Ball arrayLength dup(<>)
 	matingpool Ball matingpoolLength dup(<>)
@@ -128,7 +128,7 @@ main proc
 		; The evolution
 		evolution:
 			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target
-			;jmp evolvutionLoop
+			jmp evolvutionLoop
 
 	quite:
 		ret

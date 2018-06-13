@@ -251,7 +251,7 @@ squaredDistance proc p1: ptr Vector, p2: ptr Vector
 
 squaredDistance endp
 
-fitnessFunction proc pBall: ptr Ball
+fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 
 	push eax
 	push esi
@@ -261,7 +261,7 @@ fitnessFunction proc pBall: ptr Ball
 	cvtsi2sd xmm0, one
 	mov esi, pBall
 	assume esi: ptr Vector
-	invoke squaredDistance, esi, addr target
+	invoke squaredDistance, esi, pTarget
 	cvtsi2sd xmm1, eax
 	divsd xmm0, xmm1
 
@@ -273,7 +273,7 @@ fitnessFunction proc pBall: ptr Ball
 
 fitnessFunction endp
 
-initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword
+initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
 	push ebx
 	push ecx
@@ -295,7 +295,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			jge matingpoolInit
 		invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
 		assume esi: ptr Ball
-		invoke fitnessFunction, esi
+		invoke fitnessFunction, esi, pTarget
 		addsd xmm1, xmm0
 		inc ebx
 		jmp fitnessSumLoop
@@ -314,7 +314,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			cvtsi2sd xmm2, eax
 			invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
 			assume esi: ptr Ball
-			invoke fitnessFunction, esi
+			invoke fitnessFunction, esi, pTarget
 			mulsd xmm0, xmm1
 			divsd xmm2, xmm0
 			
@@ -354,7 +354,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 initMatingpool endp
 
 
-crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword
+crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword, pLocation: ptr Vector
 
 	push eax
 	push ebx
@@ -372,7 +372,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 
 	; Making a new child
 	mov ebx, ebp
-	invoke copyData, offset target, ebx, SizeOf(Vector)
+	invoke copyData, pLocation, ebx, SizeOf(Vector)
 	add ebx, Sizeof(Vector)
 	invoke copyData, pParent1, ebx, eax
 	mov edx, dnaLength
@@ -393,7 +393,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 crossover endp
 
 
-naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, arraySize: dword, dnaLength: dword
+naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, arraySize: dword, dnaLength: dword, pLocation: ptr Vector
 
 	push eax
 	push ebx
@@ -425,7 +425,7 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 			invoke getElementInArray, pMatingpool, ebx, Sizeof(Ball)
 
 		; Crossover
-		invoke crossover, ecx, esi, dnaLength, pArray, edx
+		invoke crossover, ecx, esi, dnaLength, pArray, edx, pLocation
 
 	exitNaturalSelection:
 		pop esi
@@ -438,10 +438,10 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 naturalSelection endp
 
 
-evolve proc pPopulation: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, dnaLength: dword
+evolve proc pPopulation: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, dnaLength: dword, pLocation: ptr Vector, pTarget: ptr Vector
 
-	invoke initMatingpool, pPopulation, populationSize, pMatingpool, matingpoolSize
-	invoke naturalSelection, pMatingpool, matingpoolSize, pPopulation, populationSize, dnaLength
+	invoke initMatingpool, pPopulation, populationSize, pMatingpool, matingpoolSize, pTarget
+	invoke naturalSelection, pMatingpool, matingpoolSize, pPopulation, populationSize, dnaLength, pLocation
 	ret
 
 evolve endp

@@ -122,7 +122,7 @@ main proc
 
 		; The evolution
 		evolution:
-			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan
+			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target
 			;jmp evolvutionLoop
 
 	quite:

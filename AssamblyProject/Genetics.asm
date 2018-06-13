@@ -1,17 +1,10 @@
-.686P
-.model flat, stdcall 
-.xmm
+
 include Genetics.inc
 
 .const
-	
-	target Vector <900, 374>
+		
 	one dword 1
 
-
-.data
-
-	matingpool Ball matingpoolLength dup(<>)
 
 .code
 

@@ -1,4 +1,5 @@
-include Genetics.asm
+
+include Genetics.inc
 include drd.inc
 includelib drd.lib
 
@@ -8,6 +9,8 @@ Sleep proto :dword
 
 .const
 
+	target Vector <900, 374>
+
 	arrayLength equ 100
 	startRange dword -15
 	endRange dword 15
@@ -16,13 +19,15 @@ Sleep proto :dword
 
 .data
 
-
+	
+	
 	; Pictures
 	pimg Img<>
 	targetImg Img<>
 	location Vector <200, 300>
 
 	balls Ball arrayLength dup(<>)
+	matingpool Ball matingpoolLength dup(<>)
 
 	live byte ?
 	

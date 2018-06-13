@@ -1,3 +1,7 @@
+.686P
+.model flat, stdcall 
+.xmm
+
 
 ;----------Functions' Declaration----------;
 
@@ -112,6 +116,7 @@ screenSizeY equ 600
 
 matingpoolLength equ 100
 lifeSpan equ 10
+
 
 	
 

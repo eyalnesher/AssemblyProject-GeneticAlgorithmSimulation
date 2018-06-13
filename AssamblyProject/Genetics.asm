@@ -190,7 +190,7 @@ copyData proc pSource: dword, pDest: dword, dataLength: dword
 			jge exitCopyingBall
 		lea ecx, [eax + ebx]
 		mov cl, [ecx]
-		mov [edx], cl
+		mov [edx+ebx], cl
 		inc ebx
 		jmp copyingLoop
 
@@ -378,15 +378,25 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	invoke random, edx, ebx
 
 	; Making a new child
+
+	; Initial location
 	lea ebx, (Ball ptr [esp]).location
 	invoke copyData, pLocation, ebx, SizeOf(Vector)
+
+	; Parent 1
 	lea ebx, (Ball ptr [esp]).forces1
 	invoke copyData, pParent1, ebx, eax
+
+	; Parent 2
 	mov edx, dnaLength
 	sub edx, eax
 	add ebx, eax
 	invoke copyData, pParent2, ebx, edx
-
+	
+	; Life
+	lea ebx, (Ball ptr [esp]).live
+	mov eax, 1
+	mov [ebx], eax
 	
 	mov ebx, esp
 	invoke putElementInArray, ebx, pArray, index, Sizeof(Ball)

@@ -288,6 +288,8 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 	movupd qword ptr [esp], xmm1
 	sub esp, 16
 	movupd qword ptr [esp], xmm2
+	sub esp, 16
+	movupd qword ptr [esp], xmm3
 
 	; Sum calculation
 	xor ebx, ebx
@@ -342,6 +344,8 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 				jmp BallLoop
 
 	exitinitMatingpool:
+		movupd xmm3, [esp]
+		add esp, 16
 		movupd xmm2, [esp]
 		add esp, 16
 		movupd xmm1, [esp]
@@ -419,7 +423,7 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 		dec ecx
 		invoke random, 0, ecx
 		cmp ebx, eax ; The parents musn't be identicall
-			jg getParents
+			jge getParents ; Now if the last ball in the matingpool wasn't been chosen yet, it could still be chosen
 		inc eax
 
 		getParents:

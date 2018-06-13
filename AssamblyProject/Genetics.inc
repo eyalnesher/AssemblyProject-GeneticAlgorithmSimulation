@@ -107,21 +107,14 @@ evolve proto pPopulation: dword, populationSize: dword, pMatingpool: dword, mati
 		live byte ?
 	Ball ENDS
 
+screenSizeX equ 1000
+screenSizeY equ 600
 
-.const
+matingpoolLength equ 100
+lifeSpan equ 10
 
-	screenSizeX equ 1000
-	screenSizeY equ 600
-
-	matingpoolLength equ 100
-	lifeSpan equ 10
-
-	target Vector <900, 374>
-
-	one dword 1
+	
 
 
-.data
 
-	matingpool Ball matingpoolLength dup(<>)
 

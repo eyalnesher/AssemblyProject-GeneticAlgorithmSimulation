@@ -1,6 +1,3 @@
-.686P
-.model flat, stdcall 
-.xmm
 include Genetics.asm
 include drd.inc
 includelib drd.lib
@@ -128,7 +125,5 @@ main proc
 
 main endp
 
+
 end main
-
-
-

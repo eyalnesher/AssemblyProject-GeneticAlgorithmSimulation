@@ -3,6 +3,16 @@
 .xmm
 include Genetics.inc
 
+.const
+	
+	target Vector <900, 374>
+	one dword 1
+
+
+.data
+
+	matingpool Ball matingpoolLength dup(<>)
+
 .code
 
 
@@ -292,8 +302,8 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			jge matingpoolInit
 		invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
 		assume esi: ptr Ball
-		;invoke fitnessFunction, esi
-		;addsd xmm1, xmm0
+		invoke fitnessFunction, esi
+		addsd xmm1, xmm0
 		inc ebx
 		jmp fitnessSumLoop
 

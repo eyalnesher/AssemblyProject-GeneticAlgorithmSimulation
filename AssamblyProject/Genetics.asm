@@ -296,7 +296,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 		invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
 		assume esi: ptr Ball
 		invoke fitnessFunction, esi, pTarget
-		addsd xmm1, xmm0
+		addsd xmm1, xmm0 ; The sum of all the fitness values
 		inc ebx
 		jmp fitnessSumLoop
 
@@ -308,6 +308,8 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 		; For each ball
 		BallLoop:
 
+			; The number of times the ball will be in the matingpool
+			; For each ball
 			cmp ebx, ballsSize
 				je exitinitMatingpool
 			mov eax, matingpoolSize
@@ -315,8 +317,8 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
 			assume esi: ptr Ball
 			invoke fitnessFunction, esi, pTarget
-			mulsd xmm0, xmm1
-			divsd xmm2, xmm0
+			mulsd xmm2, xmm0
+			divsd xmm2, xmm1
 			
 			; Initializing the mating pool
 			xor edx, edx

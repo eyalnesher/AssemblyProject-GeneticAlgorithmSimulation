@@ -111,11 +111,7 @@ evolve proto pPopulation: dword, populationSize: dword, pMatingpool: dword, mati
 		live byte ?
 	Ball ENDS
 
-screenSizeX equ 1000
-screenSizeY equ 600
 
-matingpoolLength equ 100
-lifeSpan equ 10
 
 
 	

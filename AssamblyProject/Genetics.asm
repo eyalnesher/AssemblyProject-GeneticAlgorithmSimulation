@@ -255,7 +255,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 
 	push eax
 	push esi
-	sub esp, 8
+	sub esp, 16
 	movupd [esp], xmm1
 
 	cvtsi2sd xmm0, one
@@ -266,7 +266,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	divsd xmm0, xmm1
 
 	movupd xmm1, [esp]
-	add esp, 8
+	add esp, 16
 	pop esi
 	pop eax
 	ret
@@ -279,11 +279,11 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 	push ecx
 	push edx
 	push esi
-	sub esp, 8
+	sub esp, 16
 	movupd  qword ptr [esp], xmm0
-	sub esp, 8
+	sub esp, 16
 	movupd qword ptr [esp], xmm1
-	sub esp, 8
+	sub esp, 16
 	movupd qword ptr [esp], xmm2
 
 	; Sum calculation
@@ -340,11 +340,11 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 
 	exitinitMatingpool:
 		movupd xmm2, [esp]
-		add esp, 8
+		add esp, 16
 		movupd xmm1, [esp]
-		add esp, 8
+		add esp, 16
 		movupd xmm0, [esp]
-		add esp, 8
+		add esp, 16
 		pop esi
 		pop edx
 		pop ecx

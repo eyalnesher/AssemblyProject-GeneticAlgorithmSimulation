@@ -239,7 +239,7 @@ squaredDistance proc p1: ptr Vector, p2: ptr Vector
 	push ebx
 	push ecx
 
-	lea eax, [p1]
+	mov eax, [p1]
 	sub eax, [p2]
 	imul eax, eax
 	mov ecx, eax
@@ -278,6 +278,7 @@ fitnessFunction endp
 
 initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
+	push eax
 	push ebx
 	push ecx
 	push edx
@@ -356,6 +357,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 		pop edx
 		pop ecx
 		pop ebx
+		pop eax
 		ret
 
 initMatingpool endp

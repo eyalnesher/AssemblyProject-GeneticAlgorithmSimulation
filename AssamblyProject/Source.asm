@@ -20,7 +20,7 @@ Sleep proto :dword
 
 	arrayLength equ 100
 	matingpoolLength equ 100
-	lifeSpan equ 2
+	lifeSpan equ 100
 
 
 .data

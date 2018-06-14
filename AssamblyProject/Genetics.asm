@@ -14,21 +14,32 @@ include Genetics.inc
 
 random proc startRange: sdword, endRange: sdword
 
-	push ebx
-	push edx
+	sub esp, 16
+	movupd  qword ptr [esp], xmm0
+	sub esp, 16
+	movupd qword ptr [esp], xmm1
+	sub esp, 16
+	movupd qword ptr [esp], xmm2
+	sub esp, 16
 
 	rand:
 		rdrand eax ; rdrand tryies to create a rundom number and store it at eax
 		jnc rand ; If rdrand failed, the function try it again
-		mov ebx, endRange
-		sub ebx, startRange
-		xor edx, edx
-		idiv ebx
-		mov eax, edx
-		add eax, startRange
+		cvtsi2sd xmm0, eax
+		cvtsi2sd xmm1, startRange
+		cvtsi2sd xmm2, endRange
+		subsd xmm2, xmm1
+		divsd xmm0, xmm2
+		roundsd xmm1, xmm0, 01bh
+		subsd xmm0, xmm1
+		mulsd xmm0, xmm2
+		cvtsd2si eax, xmm0
 
-	pop edx
-	pop ebx
+	movupd xmm2, [esp]
+	add esp, 16
+	movupd xmm1, [esp]
+	add esp, 16
+	movupd xmm0, [esp]
 	ret
 
 random endp

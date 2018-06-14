@@ -374,14 +374,15 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	mov ebx, 3
 	div ebx
 	mov ebx, dnaLength
-	sub ebx, edx
-	invoke random, edx, ebx
+	sub ebx, eax
+	invoke random, eax, ebx
 
 	; Making a new child
 	invoke getElementInArray, pArray, index, Sizeof(Ball)
 
 	; Initial location
 	lea ebx, (Ball ptr [esi]).location
+	invoke copyData, pLocation, ebx, Sizeof(Vector)
 
 	; Parent 1
 	lea ebx, (Ball ptr [esi]).forces1

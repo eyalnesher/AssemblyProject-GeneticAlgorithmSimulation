@@ -39,10 +39,10 @@ random proc startRange: sdword, endRange: sdword
 
 	; Convert to unsigned
 	invoke adjust, startRange
-	mov ebx, eax
-	invoke adjust, endRange
 	mov edx, eax
-	mov ecx, ebx
+	invoke adjust, endRange
+	mov ebx, eax
+	mov ecx, edx
 
 	rand:
 		rdrand eax ; rdrand tryies to create a rundom number and store it at eax

@@ -239,12 +239,12 @@ squaredDistance proc p1: ptr Vector, p2: ptr Vector
 	push ebx
 	push ecx
 
-	mov eax, [p1]
+	lea eax, [p1]
 	sub eax, [p2]
 	imul eax, eax
 	mov ecx, eax
-	mov ebx, [p1]
-	sub ebx, [p2]
+	mov ebx, [p1+4]
+	sub ebx, [p2+4]
 	imul ebx, ebx
 	add eax, ecx
 

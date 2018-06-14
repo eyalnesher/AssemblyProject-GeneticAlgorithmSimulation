@@ -388,13 +388,17 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 
 	; Parent 1
 	lea ebx, (Ball ptr [esi]).forces1
-	invoke copyData, pParent1, ebx, eax
+	mov edx, pParent1
+	add edx, Sizeof(Vector)
+	invoke copyData, edx, ebx, eax
 
 	; Parent 2
 	mov edx, dnaLength
 	sub edx, eax
 	add ebx, eax
-	invoke copyData, pParent2, ebx, edx
+	mov eax, pParent2
+	add eax, Sizeof(Vector)
+	invoke copyData, eax, ebx, edx
 	
 	; Life
 	lea ebx, (Ball ptr [esi]).live

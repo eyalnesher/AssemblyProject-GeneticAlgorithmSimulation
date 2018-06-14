@@ -6,16 +6,16 @@
 ;----------Functions' Declaration----------;
 
 ; Generate a random numbern between the given range (not including the highest) using rdrand
-random proto startRange: dword, endRange: dword
+random proto startRange: sdword, endRange: sdword
 
 ; Generate a random Vector, which is components are numbers between the given range
-generateRandomVector proto pVector: ptr Vector, startRange: dword, endRange: dword
+generateRandomVector proto pVector: ptr Vector, startRange: sdword, endRange: sdword
 
 ; Initialize a Ball with the given location and random Vertors
-initBall proto pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: dword, endRange: dword
+initBall proto pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 
 ; Initialize a new random population of Balls, all at the same location, which its size is the given size
-createPopulation proto population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: dword, endRange: dword
+createPopulation proto population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 
 ; Changing the location of the given Ball by the given Vector.
 ; It simulates a force on the Ball.
@@ -55,8 +55,8 @@ evolve proto pPopulation: dword, populationSize: dword, pMatingpool: dword, mati
 
 ; Vector structure	
 	Vector STRUCT
-		x dword ?
-		y dword ?
+		x sdword ?
+		y sdword ?
 	Vector ENDS
 
 ; Ball structure	

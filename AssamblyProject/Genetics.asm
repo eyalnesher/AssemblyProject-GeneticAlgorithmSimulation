@@ -12,7 +12,7 @@ include Genetics.inc
 .code
 
 
-random proc startRange: dword, endRange: dword
+random proc startRange: sdword, endRange: sdword
 
 	push ebx
 	push edx
@@ -23,7 +23,7 @@ random proc startRange: dword, endRange: dword
 		mov ebx, endRange
 		sub ebx, startRange
 		xor edx, edx
-		div ebx
+		idiv ebx
 		mov eax, edx
 		add eax, startRange
 
@@ -34,7 +34,7 @@ random proc startRange: dword, endRange: dword
 random endp
 	
 
-generateRandomVector proc pVector: ptr Vector, startRange: dword, endRange: dword
+generateRandomVector proc pVector: ptr Vector, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
@@ -53,7 +53,7 @@ generateRandomVector proc pVector: ptr Vector, startRange: dword, endRange: dwor
 generateRandomVector endp
 
 
-initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: dword, endRange: dword
+initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
@@ -75,7 +75,7 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 	
 	setDna:
 		cmp ecx, dnaLength
-			je exitInitBall
+			jg exitInitBall
 		mov esi, pball
 		lea esi, [esi + ecx*Sizeof(Vector) + Sizeof(Vector)]
 		invoke generateRandomVector, esi, startRange, endRange
@@ -93,7 +93,7 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 initBall endp
 
 
-createPopulation proc population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: dword, endRange: dword
+createPopulation proc population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 	
 	push ebx
 	push ecx

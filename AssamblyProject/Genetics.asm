@@ -366,7 +366,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	push eax
 	push ebx
 	push edx
-	sub esp, Sizeof(Ball) ; Creating a local variable in the stack
+	push esi
 
 	; picking a random number
 	xor edx, edx
@@ -378,13 +378,13 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	invoke random, edx, ebx
 
 	; Making a new child
+	invoke getElementInArray, pArray, index, Sizeof(Ball)
 
 	; Initial location
-	lea ebx, (Ball ptr [esp]).location
-	invoke copyData, pLocation, ebx, SizeOf(Vector)
+	lea ebx, (Ball ptr [esi]).location
 
 	; Parent 1
-	lea ebx, (Ball ptr [esp]).forces1
+	lea ebx, (Ball ptr [esi]).forces1
 	invoke copyData, pParent1, ebx, eax
 
 	; Parent 2
@@ -394,14 +394,11 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	invoke copyData, pParent2, ebx, edx
 	
 	; Life
-	lea ebx, (Ball ptr [esp]).live
+	lea ebx, (Ball ptr [esi]).live
 	mov eax, 1
 	mov [ebx], eax
-	
-	mov ebx, esp
-	invoke putElementInArray, ebx, pArray, index, Sizeof(Ball)
 
-	add esp, Sizeof(Ball)
+	pop esi
 	pop edx
 	pop ebx
 	pop eax

@@ -12,34 +12,54 @@ include Genetics.inc
 .code
 
 
+adjust proc value: dword
+
+	mov eax, value
+	cmp eax, -2147483648 ; The maximum signed value
+        jae makeSigned
+        ; Make val unsigned
+		add eax, -2147483648
+        ret
+
+	; Make val signed
+	makeSigned:
+        add eax, -2147483646 ; The minimum signed value
+        ret
+
+adjust endp
+
+
 random proc startRange: sdword, endRange: sdword
 
-	sub esp, 16
-	movupd  qword ptr [esp], xmm0
-	sub esp, 16
-	movupd qword ptr [esp], xmm1
-	sub esp, 16
-	movupd qword ptr [esp], xmm2
-	sub esp, 16
+	push ebx
+	push ecx
+	push edx
+
+	; Randomize
+
+	; Convert to unsigned
+	invoke adjust, startRange
+	mov ebx, eax
+	invoke adjust, endRange
+	mov edx, eax
+	mov ecx, ebx
 
 	rand:
 		rdrand eax ; rdrand tryies to create a rundom number and store it at eax
 		jnc rand ; If rdrand failed, the function try it again
-		cvtsi2sd xmm0, eax
-		cvtsi2sd xmm1, startRange
-		cvtsi2sd xmm2, endRange
-		subsd xmm2, xmm1
-		divsd xmm0, xmm2
-		roundsd xmm1, xmm0, 01bh
-		subsd xmm0, xmm1
-		mulsd xmm0, xmm2
-		cvtsd2si eax, xmm0
 
-	movupd xmm2, [esp]
-	add esp, 16
-	movupd xmm1, [esp]
-	add esp, 16
-	movupd xmm0, [esp]
+	sub ebx, edx
+	xor edx, edx
+	div ebx
+	mov eax, edx
+	add eax, ecx
+
+	; Convert to signed
+	invoke adjust, eax
+
+	pop edx
+	pop ecx
+	pop ebx
 	ret
 
 random endp

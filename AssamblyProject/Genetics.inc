@@ -5,6 +5,9 @@
 
 ;----------Functions' Declaration----------;
 
+; Convert signed ranges to unsigned ranges and vice versa
+adjust proto value: dword
+
 ; Generate a random numbern between the given range (not including the highest) using rdrand
 random proto startRange: sdword, endRange: sdword
 

@@ -18,9 +18,9 @@ Sleep proto :dword
 	screenSizeX equ 1000
 	screenSizeY equ 600
 
-	arrayLength equ 2
-	matingpoolLength equ 2
-	lifeSpan equ 2
+	arrayLength equ 100
+	matingpoolLength equ 100
+	lifeSpan equ 100
 
 
 .data

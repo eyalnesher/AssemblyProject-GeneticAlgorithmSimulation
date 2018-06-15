@@ -12,23 +12,6 @@ include Genetics.inc
 .code
 
 
-adjust proc value: dword
-
-	mov eax, value
-	cmp eax, -2147483648 ; The maximum signed value
-        jae makeSigned
-        ; Make val unsigned
-		add eax, -2147483648
-        ret
-
-	; Make val signed
-	makeSigned:
-        add eax, -2147483646 ; The minimum signed value
-        ret
-
-adjust endp
-
-
 random proc startRange: sdword, endRange: sdword
 
 	push ebx
@@ -37,12 +20,16 @@ random proc startRange: sdword, endRange: sdword
 
 	; Randomize
 
+	mov edx, startRange
+	mov ecx, endRange
+	cmp ecx, edx ; The start and the end are the same
+		cmove eax, startRange
+		je exitRandom
+
 	; Convert to unsigned
-	invoke adjust, startRange
-	mov edx, eax
-	invoke adjust, endRange
-	mov ebx, eax
-	mov ecx, edx
+	add edx, 80000000H
+	add ecx, 80000000H
+	mov ebx, ecx
 
 	rand:
 		rdrand eax ; rdrand tryies to create a rundom number and store it at eax
@@ -58,12 +45,13 @@ random proc startRange: sdword, endRange: sdword
 	add eax, ecx ; Now the division is in the range
 
 	; Convert to signed
-	invoke adjust, eax
+	add eax, 80000000H
 
-	pop edx
-	pop ecx
-	pop ebx
-	ret
+	exitRandom:
+		pop edx
+		pop ecx
+		pop ebx
+		ret
 
 random endp
 	

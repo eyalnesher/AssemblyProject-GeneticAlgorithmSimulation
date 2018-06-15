@@ -423,7 +423,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	sub edx, ecx
 	mov eax, Sizeof(Vector)
 	mul edx
-	add ebx, ecx
+	add ebx, eax
 	mov edx, pParent2
 	lea edx, (Ball ptr [edx]).forces1
 	add edx, edi

@@ -48,11 +48,14 @@ random proc startRange: sdword, endRange: sdword
 		rdrand eax ; rdrand tryies to create a rundom number and store it at eax
 		jnc rand ; If rdrand failed, the function try it again
 
-	sub ebx, edx
+	sub ebx, edx ; Taking the range size
+
+	; Taking the modulo
 	xor edx, edx
 	div ebx
 	mov eax, edx
-	add eax, ecx
+
+	add eax, ecx ; Now the division is in the range
 
 	; Convert to signed
 	invoke adjust, eax

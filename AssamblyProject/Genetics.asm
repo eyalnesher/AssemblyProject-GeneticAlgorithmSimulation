@@ -389,6 +389,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	push ecx
 	push edx
 	push esi
+	push edi
 
 	; picking a random number
 	xor edx, edx
@@ -411,11 +412,13 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	lea ebx, (Ball ptr [esi]).forces1
 	mov eax, Sizeof(Vector)
 	mul ecx
+	mov edi, eax
 	mov edx, pParent1
 	lea edx, (Ball ptr [edx]).forces1
 	invoke copyData, edx, ebx, eax
 
 	; Parent 2
+	mov edi, eax
 	mov edx, dnaLength
 	sub edx, ecx
 	mov eax, Sizeof(Vector)
@@ -423,6 +426,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	add ebx, ecx
 	mov edx, pParent2
 	lea edx, (Ball ptr [edx]).forces1
+	add edx, edi
 	invoke copyData, edx, ebx, eax
 	
 	; Life
@@ -430,6 +434,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	mov eax, 1
 	mov [ebx], eax
 
+	pop edi
 	pop esi
 	pop edx
 	pop ecx

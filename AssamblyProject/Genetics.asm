@@ -4,6 +4,7 @@ include Genetics.inc
 .const
 		
 	one dword 1
+	thousand dword 1000
 
 	screenSizeX equ 1000
 	screenSizeY equ 600
@@ -287,11 +288,22 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	cvtsi2sd xmm1, eax
 	divsd xmm0, xmm1
 
-	movupd xmm1, [esp]
-	add esp, 16
-	pop esi
-	pop eax
-	ret
+	; If the ball is dead, he shouldn't pass his genes to the next generation
+	lea esi, (Ball ptr [esi]).live
+	lea eax, [esi]
+	mov eax, eax
+	cmp eax, 1
+		je exitFitnessFunction
+		cvtsi2sd xmm1, thousand
+		divsd xmm0, xmm1
+	
+
+	exitFitnessFunction:
+		movupd xmm1, [esp]
+		add esp, 16
+		pop esi
+		pop eax
+		ret
 
 fitnessFunction endp
 
@@ -382,6 +394,13 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 initMatingpool endp
 
 
+mutation proc mutationRate: dword
+
+	ret
+
+mutation endp
+
+
 crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword, pLocation: ptr Vector
 
 	push eax
@@ -392,13 +411,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	push edi
 
 	; picking a random number
-	xor edx, edx
-	mov eax, dnaLength
-	mov ebx, 3
-	div ebx
-	mov ebx, dnaLength
-	sub ebx, eax
-	invoke random, eax, ebx
+	invoke random, 0, dnaLength
 	mov ecx, eax
 
 	; Making a new child

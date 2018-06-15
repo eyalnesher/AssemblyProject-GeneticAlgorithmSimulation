@@ -43,6 +43,9 @@ fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
 ; Initialize the matingpool using the balls fitness
 initMatingpool proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
+; Mutation 
+mutation proto mutationRate: dword
+
 ; Crossover two parents and create a new child ball and put the child in a given array
 crossover proto pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword, pLocation: ptr Vector
 

@@ -21,15 +21,12 @@ random proc startRange: sdword, endRange: sdword
 	; Randomize
 
 	mov edx, startRange
-	mov ecx, endRange
-	cmp ecx, edx ; The start and the end are the same
-		cmove eax, startRange
-		je exitRandom
+	mov ebx, endRange
 
 	; Convert to unsigned
 	add edx, 80000000H
-	add ecx, 80000000H
-	mov ebx, ecx
+	add ebx, 80000000H
+	mov ecx, edx
 
 	rand:
 		rdrand eax ; rdrand tryies to create a rundom number and store it at eax

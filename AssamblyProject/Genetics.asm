@@ -409,9 +409,9 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 
 	; Parent 1
 	lea ebx, (Ball ptr [esi]).forces1
-	lea edx, (Ball ptr pParent1).forces1
 	mov eax, Sizeof(Vector)
 	mul ecx
+	lea edx, (Ball ptr pParent1).forces1
 	invoke copyData, edx, ebx, eax
 
 	; Parent 2

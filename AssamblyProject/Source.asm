@@ -9,8 +9,8 @@ Sleep proto :dword
 
 .const
 
-	location Vector <200, 300>
-	target Vector <900, 374>
+	location Vector <50, 300>
+	target Vector <900, 300>
 
 	startRange dword -15
 	endRange dword 15
@@ -21,6 +21,7 @@ Sleep proto :dword
 	arrayLength equ 100
 	matingpoolLength equ 200
 	lifeSpan equ 200
+	mutationRate equ 1
 
 
 .data
@@ -127,7 +128,7 @@ main proc
 
 		; The evolution
 		evolution:
-			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target
+			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target, mutationRate, startRange, endRange
 			jmp evolvutionLoop
 
 	quite:

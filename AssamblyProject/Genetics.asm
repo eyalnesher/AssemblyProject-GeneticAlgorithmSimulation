@@ -394,14 +394,45 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 initMatingpool endp
 
 
-mutation proc mutationRate: dword
+mutation proc pBall: ptr Ball, mutationRate: dword, dnaLength: dword, startRange: dword, endRange: dword
 
-	ret
+	push eax
+	push ecx
+	push esi
+
+	mov esi, pBall
+	lea esi, (Ball ptr [esi]).forces1
+	; For each vector in the ball's DNA
+	xor ecx, ecx
+	mutationLoop:
+
+		cmp ecx, dnaLength
+			jge exitMutation
+
+		invoke random, 0, 101
+		cmp eax, mutationRate
+			jge nextMutate
+
+		mov eax, esi
+		invoke getElementInArray, esi, ecx, Sizeof(Vector)
+		assume esi: ptr Vector
+		invoke generateRandomVector, esi, startRange, endRange
+		mov esi, eax
+
+		nextMutate:
+			inc ecx
+			jmp mutationLoop
+
+	exitMutation:
+		pop esi
+		pop ecx
+		pop eax
+		ret
 
 mutation endp
 
 
-crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword, pLocation: ptr Vector
+crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword, pLocation: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
@@ -447,6 +478,10 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	mov eax, 1
 	mov [ebx], eax
 
+	; Mutation
+	assume esi: ptr Ball
+	invoke mutation, esi, mutationRate, dnaLength, startRange, endRange
+
 	pop edi
 	pop esi
 	pop edx
@@ -458,7 +493,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 crossover endp
 
 
-naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, arraySize: dword, dnaLength: dword, pLocation: ptr Vector
+naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, arraySize: dword, dnaLength: dword, pLocation: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
@@ -490,7 +525,7 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 			invoke getElementInArray, pMatingpool, ebx, Sizeof(Ball)
 
 		; Crossover
-		invoke crossover, ecx, esi, dnaLength, pArray, edx, pLocation
+		invoke crossover, ecx, esi, dnaLength, pArray, edx, pLocation, mutationRate, startRange, endRange
 		
 		inc edx
 		jmp selectionLoop
@@ -506,10 +541,10 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 naturalSelection endp
 
 
-evolve proc pPopulation: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, dnaLength: dword, pLocation: ptr Vector, pTarget: ptr Vector
+evolve proc pPopulation: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, dnaLength: dword, pLocation: ptr Vector, pTarget: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
 
 	invoke initMatingpool, pPopulation, populationSize, pMatingpool, matingpoolSize, pTarget
-	invoke naturalSelection, pMatingpool, matingpoolSize, pPopulation, populationSize, dnaLength, pLocation
+	invoke naturalSelection, pMatingpool, matingpoolSize, pPopulation, populationSize, dnaLength, pLocation, mutationRate, startRange, endRange
 	ret
 
 evolve endp

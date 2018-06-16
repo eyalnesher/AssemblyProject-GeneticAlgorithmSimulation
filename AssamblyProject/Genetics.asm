@@ -81,6 +81,7 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 	push edx
 	push esi
 
+	; Init location
 	mov esi, pball
 	lea esi, (Ball ptr [esi]).location
 	mov ebx, pInitLoc
@@ -92,6 +93,13 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 	mov ecx, (Vector ptr [ebx]).y
 	mov [eax], ecx
 
+	; Init valocity
+	mov esi, pball
+	lea esi, (Ball ptr [esi]).velocity
+	mov (Vector ptr [esi]).x, 0
+	mov (Vector ptr [esi]).y, 0
+
+	; Init life
 	mov esi, pball
 	mov (Ball ptr [esi]).live, 1
 
@@ -521,6 +529,11 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	; Initial location
 	lea ebx, (Ball ptr [esi]).location
 	invoke copyData, pLocation, ebx, Sizeof(Vector)
+
+	; Initial velocity
+	lea ebx, (Ball ptr [esi]).velocity
+	mov (Vector ptr [esi]).x, 0
+	mov (Vector ptr [esi]).y, 0
 
 	; Parent 1
 	lea ebx, (Ball ptr [esi]).forces1

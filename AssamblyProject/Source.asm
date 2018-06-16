@@ -13,15 +13,15 @@ Sleep proto :dword
 	target Vector <900, 300>
 
 	startRange dword -1
-	endRange dword 2
+	endRange dword 1
 
 	screenSizeX equ 1000
 	screenSizeY equ 600
 
 	arrayLength equ 50
-	matingpoolLength equ 200
+	matingpoolLength equ 400
 	lifeSpan equ 100
-	mutationRate equ 1
+	mutationRate equ 3
 	radios equ 34
 
 
@@ -56,6 +56,7 @@ Sleep proto :dword
 main proc
 	
 	; Initializing the screen
+	invoke random
 	invoke createPopulation, offset balls, arrayLength, addr location, lifeSpan, startRange, endRange
 	invoke drd_init, screenSizeX, screenSizeY, 0
 	invoke drd_imageLoadFile, offset ballName, offset pimg

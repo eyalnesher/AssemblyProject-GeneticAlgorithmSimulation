@@ -5,8 +5,11 @@
 
 ;----------Functions' Declaration----------;
 
-; Generate a random numbern between the given range (not including the highest) using rdrand
-random proto startRange: sdword, endRange: sdword
+; Generate a random integer between the given range (not including the highest) using rdrand
+randInt proto startRange: sdword, endRange: sdword
+
+; Generate a random real number between 0 and 1
+random proto
 
 ; Generate a random Vector, which is components are numbers between the given range
 generateRandomVector proto pVector: ptr Vector, startRange: sdword, endRange: sdword
@@ -53,6 +56,9 @@ squaredDistance proto p1: ptr Vector, p2: ptr Vector
 
 ; Calculate the fitness of the given ball
 fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
+
+; Picks a parent depends on his fitness
+evaluate proto pPopulation: dword, populationSize: dword, fitnessesSum: dword, rangSize: dword
 
 ; Initialize the matingpool using the balls fitness
 initMatingpool proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector

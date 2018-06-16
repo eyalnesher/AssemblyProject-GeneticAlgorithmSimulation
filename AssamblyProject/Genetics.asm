@@ -4,6 +4,7 @@ include Genetics.inc
 .const
 		
 	one dword 1
+	ten dword 10
 	thousand dword 1000
 
 	screenSizeX equ 1000
@@ -13,7 +14,7 @@ include Genetics.inc
 .code
 
 
-random proc startRange: sdword, endRange: sdword
+randInt proc startRange: sdword, endRange: sdword
 
 	push ebx
 	push ecx
@@ -45,24 +46,69 @@ random proc startRange: sdword, endRange: sdword
 	; Convert to signed
 	add eax, 80000000H
 
+			pop edx
+			pop ecx
+			pop ebx
+			ret
+
+randInt endp
+
+
+random proc
+
+	push eax
+	push ecx
+	sub esp, 16
+	movupd [esp], xmm1
+	sub esp, 16
+	movupd [esp], xmm2
+
+	; For every digit
+	xorpd xmm0, xmm0
+				cvtsi2sd xmm2, ten
+	mov ecx, 1
+	randomLoop:
+
+		cmp ecx, 20
+			jg exitRandom
+		invoke randInt, 0, 9
+		cvtsi2sd xmm1, eax
+		
+		; Division
+		xor eax, eax
+		divisionLoop:
+			cmp eax, ecx
+				jge exitDivisionLoop
+			divsd xmm1, xmm2
+			inc eax
+			jmp divisionLoop
+
+		exitDivisionLoop:
+			addsd xmm0, xmm1
+			inc ecx
+			jmp randomLoop
+
 	exitRandom:
-		pop edx
+		movupd xmm2, [esp]
+		add esp, 16
+		movupd xmm1, [esp]
+		add esp, 16
 		pop ecx
-		pop ebx
+		pop eax
 		ret
 
 random endp
-	
+
 
 generateRandomVector proc pVector: ptr Vector, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
 
-	invoke random, startRange, endRange
+	invoke randInt, startRange, endRange
 	mov ebx, pvector
 	mov [ebx], eax
-	invoke random, startRange, endRange
+	invoke randInt, startRange, endRange
 	mov ebx, pvector
 	add [ebx + 4], eax
 
@@ -434,6 +480,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	sub esp, 16
 	movupd [esp], xmm1
 
+	; f(b) = 1/(d(b))^2
 	cvtsi2sd xmm0, one
 	mov esi, pBall
 	assume esi: ptr Vector
@@ -442,6 +489,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	divsd xmm0, xmm1
 
 	; If the ball is dead, he should pass his genes to the next generation less often
+	; If he ball completed his goal, he should pass his genes to the next generation more often
 	movzx eax, (Ball ptr [esi]).live
 	cmp eax, 1
 		je exitFitnessFunction
@@ -464,6 +512,21 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 		ret
 
 fitnessFunction endp
+
+
+evaluate proc pPopulation: dword, populationSize: dword, fitnessesSum: dword, rangSize: dword
+
+	push ebx
+
+	xor ebx, ebx
+	invoke random
+	
+	
+	pop ebx
+	ret
+
+evaluate endp
+
 
 initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
@@ -567,7 +630,7 @@ mutation proc pBall: ptr Ball, mutationRate: dword, dnaLength: dword, startRange
 		cmp ecx, dnaLength
 			jge exitMutation
 
-		invoke random, 0, 101
+		invoke randInt, 0, 101
 		cmp eax, mutationRate
 			jge nextMutate
 
@@ -600,7 +663,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	push edi
 
 	; picking a random number
-	invoke random, 0, dnaLength
+	invoke randInt, 0, dnaLength
 	mov ecx, eax
 
 	; Making a new child
@@ -661,12 +724,12 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 
 		; Picks a random parent from the matingpool
 		mov ecx, matingpoolSize
-		invoke random, 0, ecx
+		invoke randInt, 0, ecx
 		mov ebx, eax
 
 		; Picks another random parent from the matingpool
 		dec ecx
-		invoke random, 0, ecx
+		invoke randInt, 0, ecx
 		cmp ebx, eax ; The parents musn't be identicall
 			jge getParents ; Now if the last ball in the matingpool wasn't been chosen yet, it could still be chosen
 		inc eax

@@ -101,7 +101,7 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 		cmp ecx, dnaLength
 			jg exitInitBall
 		mov esi, pball
-		invoke getElementInArray, (Ball ptr [esi]).forces1, ecx, Sizeof(Vector)
+		invoke getElementInArray, addr (Ball ptr [esi]).forces1, ecx, Sizeof(Vector)
 		invoke generateRandomVector, esi, startRange, endRange
 		inc ecx
 		jmp setDna

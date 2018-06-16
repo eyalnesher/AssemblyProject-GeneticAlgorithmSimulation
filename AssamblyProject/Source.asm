@@ -12,8 +12,8 @@ Sleep proto :dword
 	location Vector <50, 300>
 	target Vector <900, 300>
 
-	startRange dword -1
-	endRange dword 2
+	startRange dword -2
+	endRange dword 3
 
 	screenSizeX equ 1000
 	screenSizeY equ 600
@@ -22,6 +22,7 @@ Sleep proto :dword
 	matingpoolLength equ 200
 	lifeSpan equ 100
 	mutationRate equ 1
+	radios equ 34
 
 
 .data
@@ -100,7 +101,7 @@ main proc
 				assume esi: ptr Ball
 				assume edi: ptr Vector
 				pop ecx
-				invoke update, esi, ecx
+				invoke update, esi, ecx, addr target, radios
 				cmp eax, 0
 					je ballLoopEnd
 				inc live

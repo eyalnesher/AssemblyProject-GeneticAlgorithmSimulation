@@ -240,23 +240,66 @@ move proc pBall: ptr Ball
 move endp
 
 
-isAlive proc pBall: ptr Ball
+isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 
 	push ebx
+	push ecx
 
 	mov ebx, pBall
 	lea ebx, (Ball ptr [ebx]).location
+
+	; Dead x component
 	mov eax, (Vector ptr [ebx]).x
 	cmp eax, 0
 		jbe kill
 	cmp eax, screenSizeX
 		jge kill
+
+	; Dead y component
 	mov eax, (Vector ptr [ebx]).y
 	cmp eax, 0
 		jbe kill
 	cmp eax, screenSizeY
 		jge kill
-	mov eax, 1
+
+	; Complete x component
+	mov eax, (Vector ptr [ebx]).x
+	mov ecx, pTarget
+	mov ecx, (Vector ptr [ecx]).x
+	sub ecx, radios
+	cmp eax, ecx
+		mov ebx, 1
+		cmovb eax, ebx
+		jb exitIsAlive
+	add ecx, radios
+	add ecx, radios
+	cmp eax, ecx
+		mov ebx, 1
+		cmovg eax, ebx
+		jg exitIsAlive
+
+	; Complete y component
+	mov ebx, pBall
+	lea ebx, (Ball ptr [ebx]).location
+	mov eax, (Vector ptr [ebx]).y
+	mov ecx, pTarget
+	mov ecx, (Vector ptr [ecx]).y
+	sub ecx, radios
+	cmp eax, ecx
+		mov ebx, 1
+		cmovb eax, ebx
+		jb exitIsAlive
+	add ecx, radios
+	add ecx, radios
+	cmp eax, ecx
+		mov ebx, 1
+		cmovg eax, ebx
+		jg exitIsAlive
+
+	; Complete
+	mov ebx, pBall
+	mov (Ball ptr [ebx]).live, 2
+	mov eax, 2
 	jmp exitIsAlive
 
 	kill:
@@ -265,18 +308,21 @@ isAlive proc pBall: ptr Ball
 		xor eax, eax
 		
 	exitIsAlive:
+		pop ecx
 		pop ebx
 		ret
 
 isAlive endp
 
 
-update proc pBall: ptr Ball, forceIndex: dword
+update proc pBall: ptr Ball, forceIndex: dword, pTarget: ptr Vector, radios: dword
 
 	push esi
 
-	invoke isAlive, pBall
+	invoke isAlive, pBall, pTarget, radios
 	cmp eax, 0
+		je exitUpdate
+	cmp eax, 2
 		je exitUpdate
 	mov esi, pBall
 	lea esi, (Ball ptr [esi]).forces1
@@ -390,8 +436,14 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	movzx eax, (Ball ptr [esi]).live
 	cmp eax, 1
 		je exitFitnessFunction
+		cmp eax, 2
+			je completed
 		cvtsi2sd xmm1, thousand
 		divsd xmm0, xmm1
+
+		completed:
+			cvtsi2sd xmm1, thousand
+			mulsd xmm0, xmm1
 	
 
 	exitFitnessFunction:

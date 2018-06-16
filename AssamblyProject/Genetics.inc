@@ -17,9 +17,15 @@ initBall proto pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRan
 ; Initialize a new random population of Balls, all at the same location, which its size is the given size
 createPopulation proto population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 
-; Changing the location of the given Ball by the given Vector.
-; It simulates a force on the Ball.
+; Add the second vector to the first one
+addVector proto pVector1: ptr Vector, pVector2: ptr Vector
+
+; Changes the velocity of the given ball by the given Vector.
+; It simulates a physical force on the ball.
 applyForce proto pBall: ptr Ball, pForce: ptr Vector
+
+; Changes the location of the given ball by the ball's velocity.
+move proto pBall: ptr Ball
 
 ; Checks if the ball soposed to be alive or dead.
 ; If it soposed to be dead, the function changes it's living byte.
@@ -71,7 +77,10 @@ evolve proto pPopulation: dword, populationSize: dword, pMatingpool: dword, mati
 	Ball STRUCT
 		
 		; The location
-		location Vector <> 
+		location Vector <>
+
+		; the velocity
+		velocity Vector <>
 
 		;The "DNA" of the ball		
 		forces1 Vector <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>,

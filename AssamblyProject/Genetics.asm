@@ -142,25 +142,72 @@ createPopulation proc population: dword, arraySize: dword, pInitLoc: ptr Vector,
 createPopulation endp
 
 
+addVector proc pVector1: ptr Vector, pVector2: ptr Vector
+
+	push eax
+	push ebx
+
+	; Adding the x components
+	mov eax, pVector1
+	lea eax, (Vector ptr [eax]).x
+	mov ebx, pVector2
+	lea eax, (Vector ptr [ebx]).x
+	mov ebx, [ebx]
+	add [eax], ebx
+
+	; Adding the yx components
+	mov eax, pVector1
+	lea eax, (Vector ptr [eax]).y
+	mov ebx, pVector2
+	lea eax, (Vector ptr [ebx]).y
+	mov ebx, [ebx]
+	add [eax], ebx
+
+	pop ebx
+	pop eax
+	ret
+
+addVector endp
+
+
 applyForce proc pBall: ptr Ball, pForce: ptr Vector
 	
 	push eax
 	push ebx
-	push ecx
 
 	mov eax, pBall
+	lea eax, (Ball ptr [eax]).velocity
 	mov ebx, pForce
-	mov ecx, [ebx]
-	add [eax], ecx
-	mov ecx, [ebx + 4]
-	add [eax + 4], ecx
+	
+	assume eax: ptr Vector
+	assume ebx: ptr Vector
+	invoke addVector, eax, ebx
 
-	pop ecx
 	pop ebx
 	pop eax
 	ret
 
 applyForce endp
+
+
+move proc pBall: ptr Ball
+
+	push eax
+	push ebx
+
+	mov eax, pBall
+	lea ebx, (Ball ptr [eax]).velocity
+	lea eax, (Ball ptr [eax]).location
+
+	assume eax: ptr Vector
+	assume ebx: ptr Vector
+	invoke addVector, eax, ebx
+
+	pop ebx
+	pop eax
+	ret
+
+move endp
 
 
 isAlive proc pBall: ptr Ball
@@ -206,6 +253,7 @@ update proc pBall: ptr Ball, forceIndex: dword
 	invoke getElementInArray, esi, forceIndex, Sizeof(Vector)
 	assume esi: ptr Vector
 	invoke applyForce, pBall, esi
+	invoke move, pBall
 
 	exitUpdate:
 		pop esi

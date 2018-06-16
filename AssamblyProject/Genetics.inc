@@ -58,7 +58,8 @@ squaredDistance proto p1: ptr Vector, p2: ptr Vector
 fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
 
 ; Picks a parent depends on his fitness
-evaluate proto pPopulation: dword, populationSize: dword, fitnessesSum: dword, rangSize: dword
+; Assumption: in xmm3 there is the sum of all the fitness values
+evaluate proto pPopulation: dword, populationSize: dword, pTarget: ptr Vector
 
 ; Initialize the matingpool using the balls fitness
 initMatingpool proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector

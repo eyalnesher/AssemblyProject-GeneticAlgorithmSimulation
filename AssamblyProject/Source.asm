@@ -56,7 +56,6 @@ Sleep proto :dword
 main proc
 	
 	; Initializing the screen
-	invoke random
 	invoke createPopulation, offset balls, arrayLength, addr location, lifeSpan, startRange, endRange
 	invoke drd_init, screenSizeX, screenSizeY, 0
 	invoke drd_imageLoadFile, offset ballName, offset pimg

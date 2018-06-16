@@ -65,7 +65,7 @@ random proc
 
 	; For every digit
 	xorpd xmm0, xmm0
-				cvtsi2sd xmm2, ten
+	cvtsi2sd xmm2, ten
 	mov ecx, 1
 	randomLoop:
 
@@ -514,16 +514,41 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 fitnessFunction endp
 
 
-evaluate proc pPopulation: dword, populationSize: dword, fitnessesSum: dword, rangSize: dword
+evaluate proc pPopulation: dword, populationSize: dword, pTarget: ptr Vector
 
 	push ebx
+	movupd  qword ptr [esp], xmm0
+	sub esp, 16
+	movupd qword ptr [esp], xmm1
+	sub esp, 16
+	movupd qword ptr [esp], xmm2
+	sub esp, 16
 
 	xor ebx, ebx
 	invoke random
+	movsd xmm1, xmm0
+	xorpd xmm2, xmm2
 	
-	
-	pop ebx
-	ret
+	pickingLoop:
+		comisd xmm1, xmm2
+			jbe exitEvaluate
+		invoke getElementInArray, pPopulation, ebx, Sizeof(Ball)
+		assume esi: ptr Ball
+		invoke fitnessFunction, esi, pTarget
+		divsd xmm0, xmm3 ; Normalizing the fitness value
+		subsd xmm1, xmm0
+		inc ebx
+		jmp pickingLoop
+
+	exitEvaluate:
+		movupd xmm2, [esp]
+		add esp, 16
+		movupd xmm1, [esp]
+		add esp, 16
+		movupd xmm0, [esp]
+		add esp, 16
+		pop ebx
+		ret
 
 evaluate endp
 

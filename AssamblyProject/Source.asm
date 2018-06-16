@@ -13,7 +13,7 @@ Sleep proto :dword
 	target Vector <900, 300>
 
 	startRange dword -1
-	endRange dword -1
+	endRange dword 2
 
 	screenSizeX equ 1000
 	screenSizeY equ 600

@@ -449,6 +449,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 			je completed
 		cvtsi2sd xmm1, thousand
 		divsd xmm0, xmm1
+		jmp exitFitnessFunction
 
 		completed:
 			cvtsi2sd xmm1, thousand

@@ -181,7 +181,7 @@ addVector proc pVector1: ptr Vector, pVector2: ptr Vector
 	mov eax, pVector1
 	lea eax, (Vector ptr [eax]).x
 	mov ebx, pVector2
-	lea eax, (Vector ptr [ebx]).x
+	lea ebx, (Vector ptr [ebx]).x
 	mov ebx, [ebx]
 	add [eax], ebx
 
@@ -189,7 +189,7 @@ addVector proc pVector1: ptr Vector, pVector2: ptr Vector
 	mov eax, pVector1
 	lea eax, (Vector ptr [eax]).y
 	mov ebx, pVector2
-	lea eax, (Vector ptr [ebx]).y
+	lea ebx, (Vector ptr [ebx]).y
 	mov ebx, [ebx]
 	add [eax], ebx
 

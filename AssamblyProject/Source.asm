@@ -12,15 +12,15 @@ Sleep proto :dword
 	location Vector <50, 300>
 	target Vector <900, 300>
 
-	startRange dword -15
-	endRange dword 15
+	startRange dword -1
+	endRange dword 2
 
 	screenSizeX equ 1000
 	screenSizeY equ 600
 
-	arrayLength equ 100
+	arrayLength equ 50
 	matingpoolLength equ 200
-	lifeSpan equ 200
+	lifeSpan equ 100
 	mutationRate equ 1
 
 

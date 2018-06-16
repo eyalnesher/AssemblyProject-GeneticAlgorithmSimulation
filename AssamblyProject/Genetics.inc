@@ -23,7 +23,12 @@ applyForce proto pBall: ptr Ball, pForce: ptr Vector
 
 ; Checks if the ball soposed to be alive or dead.
 ; If it soposed to be dead, the function changes it's living byte.
+; The value (of life) returned in eax
 isAlive proto pBall: ptr Ball
+
+; Check if the ball is alive or dead.
+; If the ball is alive, his location is updated by the current force
+update proto pBall: ptr Ball, forceIndex: dword
 
 ; Copy the content of a ball to another ball
 copyData proto pSource: dword, pDest: dword, dataLength: dword

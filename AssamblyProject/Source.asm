@@ -72,6 +72,7 @@ main proc
 
 			cmp ecx, lifeSpan
 				je evolution
+			push eax
 			push ecx
 			
 			; For each ball in the current generation
@@ -81,38 +82,32 @@ main proc
 				cmp ebx, arrayLength
 					je movementLoopEnd
 				push ebx
-				push ecx
 				push edx
 				push esi
 
 
 				; Getting the pointers
 				invoke getElementInArray, offset balls, ebx, Sizeof(Ball)
-				lea edi, [esi + ecx*Sizeof(Vector) + Sizeof(Vector)] ; The location in the memory of the current vector
 				
 				; Display
+				push ecx
 				invoke drd_processMessages
 				invoke drd_imageDraw, offset pimg, dword ptr [esi], dword ptr [esi + 4]
 				invoke drd_imageDraw, offset targetImg, target.x, target.y
 				invoke drd_flip
-				
-				
-				; Checking life
-				lea edx, [esi + Size(Ball) - 1]
-				cmp byte ptr [edx], 0
-					je ballLoopEnd
-				inc live
 
 				; Moving
 				assume esi: ptr Ball
 				assume edi: ptr Vector
-				invoke applyForce, esi, edi
-				invoke isAlive, esi
+				pop ecx
+				invoke update, esi, ecx
+				cmp eax, 0
+					je ballLoopEnd
+				inc live
 
-				BallLoopEnd:
+				ballLoopEnd:
 					pop esi
 					pop edx
-					pop ecx
 					pop ebx
 					inc ebx
 					jmp ballLoop
@@ -121,8 +116,11 @@ main proc
 			movementLoopEnd:
 				;invoke Sleep, 10
 				invoke drd_pixelsClear, 0
-
 				pop ecx
+				xor eax, eax
+				cmp live, al
+					pop eax
+					je evolution
 				inc ecx
 				jmp movementLoop
 

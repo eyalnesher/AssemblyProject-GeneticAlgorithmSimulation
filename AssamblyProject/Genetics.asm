@@ -166,7 +166,6 @@ applyForce endp
 isAlive proc pBall: ptr Ball
 
 	push eax
-	push ebx
 
 	mov ebx, pBall
 	mov eax, [ebx]
@@ -179,6 +178,7 @@ isAlive proc pBall: ptr Ball
 		jbe kill
 	cmp eax, screenSizeY
 		jge kill
+	mov eax, 1
 	jmp exitIsAlive
 
 	kill:
@@ -188,10 +188,29 @@ isAlive proc pBall: ptr Ball
 		
 	exitIsAlive:
 		pop ebx
-		pop eax
 		ret
 
 isAlive endp
+
+
+update proc pBall: ptr Ball, forceIndex: dword
+
+	push esi
+
+	invoke isAlive, pBall
+	cmp eax, 0
+		je exitUpdate
+	mov esi, pBall
+	lea esi, (Ball ptr [esi]).forces1
+	invoke getElementInArray, esi, forceIndex, Sizeof(Vector)
+	assume esi: ptr Vector
+	invoke applyForce, pBall, esi
+
+	exitUpdate:
+		pop esi
+		ret
+
+update endp
 
 
 copyData proc pSource: dword, pDest: dword, dataLength: dword

@@ -165,15 +165,16 @@ applyForce endp
 
 isAlive proc pBall: ptr Ball
 
-	push eax
+	push ebx
 
 	mov ebx, pBall
-	mov eax, [ebx]
+	lea ebx, (Ball ptr [ebx]).location
+	mov eax, (Vector ptr [ebx]).x
 	cmp eax, 0
 		jbe kill
 	cmp eax, screenSizeX
 		jge kill
-	mov eax, [ebx + 4]
+	mov eax, (Vector ptr [ebx]).y
 	cmp eax, 0
 		jbe kill
 	cmp eax, screenSizeY
@@ -182,9 +183,9 @@ isAlive proc pBall: ptr Ball
 	jmp exitIsAlive
 
 	kill:
-		lea ebx, [esi + Sizeof(Ball) - 1]
+		mov ebx, pBall
+		mov (Ball ptr [ebx]).live, 0
 		xor eax, eax
-		mov [ebx], eax ; The ball is dead
 		
 	exitIsAlive:
 		pop ebx
@@ -307,10 +308,8 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	cvtsi2sd xmm1, eax
 	divsd xmm0, xmm1
 
-	; If the ball is dead, he shouldn't pass his genes to the next generation
-	lea esi, (Ball ptr [esi]).live
-	lea eax, [esi]
-	mov eax, eax
+	; If the ball is dead, he should pass his genes to the next generation less often
+	movzx eax, (Ball ptr [esi]).live
 	cmp eax, 1
 		je exitFitnessFunction
 		cvtsi2sd xmm1, thousand

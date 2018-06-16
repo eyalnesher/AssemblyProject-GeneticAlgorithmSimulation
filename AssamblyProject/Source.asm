@@ -67,9 +67,9 @@ main proc
 		
 		; For each force in the balls "DNA"
 		xor ecx, ecx
-		mov live, 0
 		movementLoop:
 
+			mov live, 0
 			cmp ecx, lifeSpan
 				je evolution
 			push eax

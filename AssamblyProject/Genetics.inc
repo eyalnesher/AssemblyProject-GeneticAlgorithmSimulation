@@ -11,10 +11,13 @@ random proto startRange: sdword, endRange: sdword
 ; Generate a random Vector, which is components are numbers between the given range
 generateRandomVector proto pVector: ptr Vector, startRange: sdword, endRange: sdword
 
-; Initialize a Ball with the given location and random Vertors
+; Initial the location, velocity and life of the ball
+initBasicBall proto pBall: ptr Ball, pInitLoc: ptr Vector
+
+; Initialize a ball with the given location and random Vertors
 initBall proto pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 
-; Initialize a new random population of Balls, all at the same location, which its size is the given size
+; Initialize a new random population of balls, all at the same location, which its size is the given size
 createPopulation proto population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 
 ; Add the second vector to the first one

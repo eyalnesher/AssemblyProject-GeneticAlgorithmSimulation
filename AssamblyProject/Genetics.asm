@@ -73,15 +73,14 @@ generateRandomVector proc pVector: ptr Vector, startRange: sdword, endRange: sdw
 generateRandomVector endp
 
 
-initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
+initBasicBall proc pBall: ptr Ball, pInitLoc: ptr Vector
 
 	push eax
 	push ebx
 	push ecx
-	push edx
 	push esi
 
-	; Init location
+	; Initial location
 	mov esi, pball
 	lea esi, (Ball ptr [esi]).location
 	mov ebx, pInitLoc
@@ -93,15 +92,34 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 	mov ecx, (Vector ptr [ebx]).y
 	mov [eax], ecx
 
-	; Init valocity
+	; Initial valocity
 	mov esi, pball
 	lea esi, (Ball ptr [esi]).velocity
 	mov (Vector ptr [esi]).x, 0
 	mov (Vector ptr [esi]).y, 0
 
-	; Init life
+	; Initial life
 	mov esi, pball
 	mov (Ball ptr [esi]).live, 1
+
+	pop esi
+	pop ecx
+	pop ebx
+	pop eax
+	ret
+
+initBasicBall endp
+
+
+initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
+
+	push eax
+	push ebx
+	push ecx
+	push edx
+	push esi
+
+	invoke initBasicBall, pBall, pInitLoc
 
 	xor ecx, ecx
 	
@@ -526,14 +544,8 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	; Making a new child
 	invoke getElementInArray, pArray, index, Sizeof(Ball)
 
-	; Initial location
-	lea ebx, (Ball ptr [esi]).location
-	invoke copyData, pLocation, ebx, Sizeof(Vector)
-
-	; Initial velocity
-	lea ebx, (Ball ptr [esi]).velocity
-	mov (Vector ptr [esi]).x, 0
-	mov (Vector ptr [esi]).y, 0
+	assume esi: ptr Ball
+	invoke initBasicBall, esi, pLocation
 
 	; Parent 1
 	lea ebx, (Ball ptr [esi]).forces1
@@ -555,9 +567,6 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	lea edx, (Ball ptr [edx]).forces1
 	add edx, edi
 	invoke copyData, edx, ebx, eax
-	
-	; Life
-	mov (Ball ptr [esi]).live, 1
 
 	; Mutation
 	assume esi: ptr Ball

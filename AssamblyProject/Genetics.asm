@@ -82,14 +82,18 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 	push esi
 
 	mov esi, pball
+	lea esi, (Ball ptr [esi]).location
 	mov ebx, pInitLoc
-	mov ecx, [ebx]
-	mov [esi], ecx
-	mov ecx, [ebx + 4]
-	mov [esi + 4], ecx
-	lea esi, [esi + Sizeof(Ball) - 1]
-	mov edx, 1
-	mov [esi], edx ; The ball is alive
+
+	lea eax, (Vector ptr [esi]).x
+	mov ecx, (Vector ptr [ebx]).x
+	mov [eax], ecx
+	lea eax, (Vector ptr [esi]).y
+	mov ecx, (Vector ptr [ebx]).y
+	mov [eax], ecx
+
+	mov esi, pball
+	mov (Ball ptr [esi]).live, 1
 
 	xor ecx, ecx
 	
@@ -97,7 +101,7 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 		cmp ecx, dnaLength
 			jg exitInitBall
 		mov esi, pball
-		lea esi, [esi + ecx*Sizeof(Vector) + Sizeof(Vector)]
+		invoke getElementInArray, (Ball ptr [esi]).forces1, ecx, Sizeof(Vector)
 		invoke generateRandomVector, esi, startRange, endRange
 		inc ecx
 		jmp setDna
@@ -278,7 +282,7 @@ copyData proc pSource: dword, pDest: dword, dataLength: dword
 			jge exitCopyingBall
 		lea ecx, [eax + ebx]
 		mov cl, [ecx]
-		mov [edx+ebx], cl
+		mov byte ptr [edx+ebx], cl
 		inc ebx
 		jmp copyingLoop
 
@@ -540,9 +544,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	invoke copyData, edx, ebx, eax
 	
 	; Life
-	lea ebx, (Ball ptr [esi]).live
-	mov eax, 1
-	mov [ebx], eax
+	mov (Ball ptr [esi]).live, 1
 
 	; Mutation
 	assume esi: ptr Ball

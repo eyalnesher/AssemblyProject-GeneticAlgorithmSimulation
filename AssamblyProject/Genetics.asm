@@ -403,13 +403,22 @@ squaredDistance proc p1: ptr Vector, p2: ptr Vector
 	push ebx
 	push ecx
 
-	mov eax, [p1]
-	sub eax, [p2]
+	; X components
+	mov eax, p1
+	mov eax, (Vector ptr [eax]).x
+	mov ebx, p2
+	mov ebx, (Vector ptr [ebx]).x
+	sub eax, ebx
 	imul eax, eax
 	mov ecx, eax
-	mov ebx, [p1+4]
-	sub ebx, [p2+4]
-	imul ebx, ebx
+	
+	; Y components
+	mov eax, p1
+	mov eax, (Vector ptr [eax]).y
+	mov ebx, p2
+	mov ebx, (Vector ptr [ebx]).y
+	sub eax, ebx
+	imul eax, eax
 	add eax, ecx
 
 	pop ecx

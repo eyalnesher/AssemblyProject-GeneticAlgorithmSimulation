@@ -10,6 +10,11 @@ include Genetics.inc
 	screenSizeX equ 1000
 	screenSizeY equ 600
 
+	obstacleX = 450
+	obstacleY = 150
+	obstacleWidth = 100
+	obstacleHeight = 300
+
 
 .code
 
@@ -157,7 +162,9 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 
 	push ebx
 	push ecx
+	push edx
 
+	
 	mov ebx, pBall
 	lea ebx, (Ball ptr [ebx]).location
 
@@ -170,9 +177,6 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 	cmp eax, screenSizeX
 		jge kill
 
-	; Obstacle
-	
-
 	; Dead y component
 	mov eax, (Vector ptr [ebx]).y
 	cmp eax, 0
@@ -180,45 +184,74 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 	cmp eax, screenSizeY
 		jge kill
 
-	; Complete x component
-	mov eax, (Vector ptr [ebx]).x
-	mov ecx, pTarget
-	mov ecx, (Vector ptr [ecx]).x
-	sub ecx, radios
-	cmp eax, ecx
-		mov ebx, 1
-		cmovb eax, ebx
-		jl exitIsAlive
-	add ecx, radios
-	add ecx, radios
-	cmp eax, ecx
-		mov ebx, 1
-		cmovg eax, ebx
-		jg exitIsAlive
+		; Obstacle
+		obstacleCrashX:
+			mov eax, (Vector ptr [ebx]).x
+			xor edx, edx
+			mov ecx, obstacleX
+			cmp eax, ecx
+				jl nextCrashedX
+				inc edx
+			nextCrashedX:
+				add ecx, obstacleWidth
+				cmp eax, ecx
+					jg obstacleCrashY
+					inc edx
 
-	; Complete y component
-	mov ebx, pBall
-	lea ebx, (Ball ptr [ebx]).location
-	mov eax, (Vector ptr [ebx]).y
-	mov ecx, pTarget
-	mov ecx, (Vector ptr [ecx]).y
-	sub ecx, radios
-	cmp eax, ecx
-		mov ebx, 1
-		cmovb eax, ebx
-		jl exitIsAlive
-	add ecx, radios
-	add ecx, radios
-	cmp eax, ecx
-		mov ebx, 1
-		cmovg eax, ebx
-		jg exitIsAlive
+		obstacleCrashY:
+			mov eax, (Vector ptr [ebx]).y
+			mov ecx, obstacleY
+			cmp eax, ecx
+				jl nextCrashedY
+				inc edx
+			nextCrashedY:
+				add ecx, obstacleHeight
+				cmp eax, ecx
+					jg complete
+					inc edx
+				cmp edx, 4
+					je kill
 
-	; Complete
-	mov ebx, pBall
-	mov (Ball ptr [ebx]).live, 2
-	mov eax, 2
-	jmp exitIsAlive
+	complete:
+		; Complete x component
+		mov eax, (Vector ptr [ebx]).x
+		mov ecx, pTarget
+		mov ecx, (Vector ptr [ecx]).x
+		sub ecx, radios
+		cmp eax, ecx
+			mov ebx, 1
+			cmovb eax, ebx
+			jl exitIsAlive
+		add ecx, radios
+		add ecx, radios
+		cmp eax, ecx
+			mov ebx, 1
+			cmovg eax, ebx
+			jg exitIsAlive
+
+		; Complete y component
+		mov ebx, pBall
+		lea ebx, (Ball ptr [ebx]).location
+		mov eax, (Vector ptr [ebx]).y
+		mov ecx, pTarget
+		mov ecx, (Vector ptr [ecx]).y
+		sub ecx, radios
+		cmp eax, ecx
+			mov ebx, 1
+			cmovb eax, ebx
+			jl exitIsAlive
+		add ecx, radios
+		add ecx, radios
+		cmp eax, ecx
+			mov ebx, 1
+			cmovg eax, ebx
+			jg exitIsAlive
+
+		; Complete
+		mov ebx, pBall
+		mov (Ball ptr [ebx]).live, 2
+		mov eax, 2
+		jmp exitIsAlive
 
 	kill:
 		mov ebx, pBall
@@ -226,6 +259,7 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 		xor eax, eax
 		
 	exitIsAlive:
+		pop edx
 		pop ecx
 		pop ebx
 		ret

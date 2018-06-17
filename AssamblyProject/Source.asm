@@ -116,7 +116,7 @@ main proc
 
 			
 			movementLoopEnd:
-				invoke Sleep, 50
+				invoke Sleep, 10
 				invoke drd_pixelsClear, 0
 				pop ecx
 				xor eax, eax
@@ -128,20 +128,7 @@ main proc
 
 		; The evolution
 		evolution:
-			; Test
-			; For each ball
-			fitnessSumLoop:
-				cmp ebx, arrayLength
-					jge quite
-				invoke getElementInArray, offset balls, ebx, Sizeof(Ball)
-				assume esi: ptr Ball
-				invoke fitnessFunction, esi, offset target
-				addsd xmm1, xmm0 ; The sum of all the fitness values
-				inc ebx
-				jmp fitnessSumLoop
-			movsd xmm3, xmm1
-			invoke evaluate, offset balls, addr target
-			;invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target, mutationRate, startRange, endRange
+			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target, mutationRate, startRange, endRange
 			jmp evolvutionLoop
 
 	quite:

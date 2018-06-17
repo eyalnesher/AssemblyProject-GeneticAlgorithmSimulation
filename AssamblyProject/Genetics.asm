@@ -39,12 +39,6 @@ initBasicBall proc pBall: ptr Ball, pInitLoc: ptr Vector
 	mov (Vector ptr [esi]).x, 0
 	mov (Vector ptr [esi]).y, 0
 
-	; Initial acceleration
-	mov esi, pball
-	lea esi, (Ball ptr [esi]).acceleration
-	mov (Vector ptr [esi]).x, 0
-	mov (Vector ptr [esi]).y, 0
-
 	; Initial life
 	mov esi, pball
 	mov (Ball ptr [esi]).live, 1
@@ -125,7 +119,7 @@ applyForce proc pBall: ptr Ball, pForce: ptr Vector
 	push ebx
 
 	mov eax, pBall
-	lea eax, (Ball ptr [eax]).acceleration
+	lea eax, (Ball ptr [eax]).velocity
 	mov ebx, pForce
 	
 	assume eax: ptr Vector
@@ -143,23 +137,15 @@ move proc pBall: ptr Ball
 
 	push eax
 	push ebx
-	push ecx
 
 	mov eax, pBall
-	lea ecx, (Ball ptr [eax]).acceleration
 	lea ebx, (Ball ptr [eax]).velocity
-
-	assume ebx: ptr Vector
-	assume ecx: ptr Vector
-	invoke addVector, ebx, ecx
-	
 	lea eax, (Ball ptr [eax]).location
 
 	assume eax: ptr Vector
 	assume ebx: ptr Vector
 	invoke addVector, eax, ebx
 
-	pop ecx
 	pop ebx
 	pop eax
 	ret
@@ -175,12 +161,17 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 	mov ebx, pBall
 	lea ebx, (Ball ptr [ebx]).location
 
-	; Dead x component
+	; Crashed x component
 	mov eax, (Vector ptr [ebx]).x
+
+	; Edges
 	cmp eax, 0
 		jle kill
 	cmp eax, screenSizeX
 		jge kill
+
+	; Obstacle
+	
 
 	; Dead y component
 	mov eax, (Vector ptr [ebx]).y

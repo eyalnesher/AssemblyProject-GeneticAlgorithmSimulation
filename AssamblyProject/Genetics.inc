@@ -66,9 +66,6 @@ evolve proto pPopulation: dword, populationSize: dword, pMatingpool: dword, mati
 		; tThe velocity
 		velocity Vector <>
 
-		; the acceleration
-		acceleration Vector <>
-
 		;The "DNA" of the ball		
 		forces1 Vector <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>,
 					   <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>

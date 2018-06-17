@@ -1,6 +1,6 @@
-.686P
-.model flat, stdcall 
-.xmm
+
+include Setmodel.inc
+include Utilities.inc
 
 .const
 

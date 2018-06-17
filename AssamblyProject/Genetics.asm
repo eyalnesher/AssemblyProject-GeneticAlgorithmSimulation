@@ -1,4 +1,5 @@
 
+include Setmodel.inc
 include Genetics.inc
 
 .const

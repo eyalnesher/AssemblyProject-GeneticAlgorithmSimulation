@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Genetics.inc" />
+    <None Include="Setmodel.inc" />
     <None Include="Utilities.inc" />
     <None Include="Vectorator.inc" />
   </ItemGroup>

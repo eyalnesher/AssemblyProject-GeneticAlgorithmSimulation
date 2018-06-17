@@ -1,6 +1,3 @@
-.686P
-.model flat, stdcall 
-.xmm
 
 ; Generate a random integer between the given range (not including the highest) using rdrand
 randInt proto startRange: sdword, endRange: sdword

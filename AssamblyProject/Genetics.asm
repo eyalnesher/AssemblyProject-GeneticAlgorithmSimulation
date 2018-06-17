@@ -310,15 +310,15 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 fitnessFunction endp
 
 
-evaluate proc pPopulation: dword, pTarget: ptr Vector
+evaluate proc pPopulation: dword, fitnessSum: xmmword, pTarget: ptr Vector
 
 	push ebx
-	movupd  qword ptr [esp], xmm0
 	sub esp, 16
-	movupd qword ptr [esp], xmm1
+	movupd  xmmword ptr [esp], xmm0
 	sub esp, 16
-	movupd qword ptr [esp], xmm2
+	movupd  xmmword ptr [esp], xmm1
 	sub esp, 16
+	movupd  xmmword ptr [esp], xmm2
 
 	xor ebx, ebx
 	invoke random
@@ -331,7 +331,7 @@ evaluate proc pPopulation: dword, pTarget: ptr Vector
 		invoke getElementInArray, pPopulation, ebx, Sizeof(Ball)
 		assume esi: ptr Ball
 		invoke fitnessFunction, esi, pTarget
-		divsd xmm0, xmm3 ; Normalizing the fitness value
+		divsd xmm0, fitnessSum ; Normalizing the fitness value
 		subsd xmm1, xmm0
 		inc ebx
 		jmp pickingLoop

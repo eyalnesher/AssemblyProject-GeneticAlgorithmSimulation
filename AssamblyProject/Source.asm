@@ -7,6 +7,7 @@ includelib drd.lib
 
 
 Sleep proto :dword
+exitProcess proto: dword
 
 .const
 
@@ -129,11 +130,22 @@ main proc
 		; The evolution
 		evolution:
 			; Test
-			;invoke evaluate, offset balls, addr target
-			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target, mutationRate, startRange, endRange
-			jmp evolvutionLoop
+			; For each ball
+		fitnessSumLoop:
+			cmp ebx, arrayLength
+				jge quite
+			invoke getElementInArray, offset balls, ebx, Sizeof(Ball)
+			assume esi: ptr Ball
+			invoke fitnessFunction, esi, pTarget
+			addsd xmm1, xmm0 ; The sum of all the fitness values
+			inc ebx
+			jmp fitnessSumLoop
+			invoke evaluate, offset balls, xmm1, addr target
+			;invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target, mutationRate, startRange, endRange
+			;jmp evolvutionLoop
 
 	quite:
+		invoke exitProcess, 0
 		ret
 
 main endp

@@ -311,14 +311,14 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 	; Dead x component
 	mov eax, (Vector ptr [ebx]).x
 	cmp eax, 0
-		jbe kill
+		jle kill
 	cmp eax, screenSizeX
 		jge kill
 
 	; Dead y component
 	mov eax, (Vector ptr [ebx]).y
 	cmp eax, 0
-		jbe kill
+		jle kill
 	cmp eax, screenSizeY
 		jge kill
 
@@ -330,7 +330,7 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 	cmp eax, ecx
 		mov ebx, 1
 		cmovb eax, ebx
-		jb exitIsAlive
+		jl exitIsAlive
 	add ecx, radios
 	add ecx, radios
 	cmp eax, ecx
@@ -348,7 +348,7 @@ isAlive proc pBall: ptr Ball, pTarget: ptr Vector, radios: dword
 	cmp eax, ecx
 		mov ebx, 1
 		cmovb eax, ebx
-		jb exitIsAlive
+		jl exitIsAlive
 	add ecx, radios
 	add ecx, radios
 	cmp eax, ecx

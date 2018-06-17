@@ -59,7 +59,7 @@ fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
 
 ; Picks a parent depends on his fitness
 ; Assumption: in xmm3 there is the sum of all the fitness values
-evaluate proto pPopulation: dword, populationSize: dword, pTarget: ptr Vector
+evaluate proto pPopulation: dword, pTarget: ptr Vector
 
 ; Initialize the matingpool using the balls fitness
 initMatingpool proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
@@ -89,8 +89,11 @@ evolve proto pPopulation: dword, populationSize: dword, pMatingpool: dword, mati
 		; The location
 		location Vector <>
 
-		; the velocity
+		; tThe velocity
 		velocity Vector <>
+
+		; the acceleration
+		acceleration Vector <>
 
 		;The "DNA" of the ball		
 		forces1 Vector <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>, <>,

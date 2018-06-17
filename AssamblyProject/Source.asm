@@ -13,7 +13,7 @@ Sleep proto :dword
 	target Vector <900, 300>
 
 	startRange dword -1
-	endRange dword 1
+	endRange dword 2
 
 	screenSizeX equ 1000
 	screenSizeY equ 600
@@ -115,7 +115,7 @@ main proc
 
 			
 			movementLoopEnd:
-				;invoke Sleep, 10
+				invoke Sleep, 50
 				invoke drd_pixelsClear, 0
 				pop ecx
 				xor eax, eax
@@ -127,6 +127,8 @@ main proc
 
 		; The evolution
 		evolution:
+			; Test
+			;invoke evaluate, offset balls, addr target
 			invoke evolve, offset balls, arrayLength, offset matingpool, matingpoolLength, lifeSpan, offset location, addr target, mutationRate, startRange, endRange
 			jmp evolvutionLoop
 

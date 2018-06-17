@@ -144,6 +144,12 @@ initBasicBall proc pBall: ptr Ball, pInitLoc: ptr Vector
 	mov (Vector ptr [esi]).x, 0
 	mov (Vector ptr [esi]).y, 0
 
+	; Initial acceleration
+	mov esi, pball
+	lea esi, (Ball ptr [esi]).acceleration
+	mov (Vector ptr [esi]).x, 0
+	mov (Vector ptr [esi]).y, 0
+
 	; Initial life
 	mov esi, pball
 	mov (Ball ptr [esi]).live, 1
@@ -252,7 +258,7 @@ applyForce proc pBall: ptr Ball, pForce: ptr Vector
 	push ebx
 
 	mov eax, pBall
-	lea eax, (Ball ptr [eax]).velocity
+	lea eax, (Ball ptr [eax]).acceleration
 	mov ebx, pForce
 	
 	assume eax: ptr Vector
@@ -270,15 +276,23 @@ move proc pBall: ptr Ball
 
 	push eax
 	push ebx
+	push ecx
 
 	mov eax, pBall
+	lea ecx, (Ball ptr [eax]).acceleration
 	lea ebx, (Ball ptr [eax]).velocity
+
+	assume ebx: ptr Vector
+	assume ecx: ptr Vector
+	invoke addVector, ebx, ecx
+	
 	lea eax, (Ball ptr [eax]).location
 
 	assume eax: ptr Vector
 	assume ebx: ptr Vector
 	invoke addVector, eax, ebx
 
+	pop ecx
 	pop ebx
 	pop eax
 	ret
@@ -399,7 +413,7 @@ copyData proc pSource: dword, pDest: dword, dataLength: dword
 		cmp ebx, dataLength
 			jge exitCopyingBall
 		lea ecx, [eax + ebx]
-		mov cl, [ecx]
+		mov cl, byte ptr [ecx]
 		mov byte ptr [edx+ebx], cl
 		inc ebx
 		jmp copyingLoop
@@ -483,6 +497,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 	; f(b) = 1/(d(b))^2
 	cvtsi2sd xmm0, one
 	mov esi, pBall
+	lea esi, (Ball ptr [esi]).location
 	assume esi: ptr Vector
 	invoke squaredDistance, esi, pTarget
 	cvtsi2sd xmm1, eax
@@ -514,7 +529,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 fitnessFunction endp
 
 
-evaluate proc pPopulation: dword, populationSize: dword, pTarget: ptr Vector
+evaluate proc pPopulation: dword, pTarget: ptr Vector
 
 	push ebx
 	movupd  qword ptr [esp], xmm0

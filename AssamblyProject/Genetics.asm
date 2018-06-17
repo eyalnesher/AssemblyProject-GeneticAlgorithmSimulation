@@ -4,7 +4,6 @@ include Genetics.inc
 .const
 		
 	one dword 1
-	ten dword 10
 	thousand dword 1000
 
 	screenSizeX equ 1000

@@ -1,4 +1,10 @@
+.686P
+.model flat, stdcall 
+.xmm
 
+.const
+
+	ten dword 10
 
 .code
 
@@ -144,3 +150,5 @@ putElementInArray proc pElement: dword, pArray: dword, index: dword, elementSize
 	ret
 
 putElementInArray endp
+
+end

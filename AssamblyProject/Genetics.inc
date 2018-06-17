@@ -35,7 +35,7 @@ fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
 
 ; Picks a parent depends on his fitness
 ; Assumption: in xmm3 there is the sum of all the fitness values
-evaluate proto pPopulation: dword, fitnessSum: xmmword, pTarget: ptr Vector
+evaluate proto pPopulation: dword, pTarget: ptr Vector
 
 ; Initialize the matingpool using the balls fitness
 initMatingpool proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector

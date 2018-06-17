@@ -10,10 +10,10 @@ generateRandomVector proc pVector: ptr Vector, startRange: sdword, endRange: sdw
 	push eax
 	push ebx
 
-	invoke randInt, startRange, endRange
+	invoke random, startRange, endRange
 	mov ebx, pvector
 	mov [ebx], eax
-	invoke randInt, startRange, endRange
+	invoke random, startRange, endRange
 	mov ebx, pvector
 	add [ebx + 4], eax
 

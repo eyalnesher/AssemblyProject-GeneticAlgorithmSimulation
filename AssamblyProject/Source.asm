@@ -45,12 +45,6 @@ Sleep proto :dword
 
 	live byte ?
 	
-	x dword 1
-	y dword 0
-	looper dword 5
-	slower byte 100
-	steps byte ?
-	
 	currentForce dword 0
 
 

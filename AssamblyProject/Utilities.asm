@@ -8,7 +8,7 @@ include Utilities.inc
 
 .code
 
-randInt proc startRange: sdword, endRange: sdword
+random proc startRange: sdword, endRange: sdword
 
 	push ebx
 	push ecx
@@ -44,52 +44,6 @@ randInt proc startRange: sdword, endRange: sdword
 			pop ecx
 			pop ebx
 			ret
-
-randInt endp
-
-
-random proc
-
-	push eax
-	push ecx
-	sub esp, 16
-	movupd [esp], xmm1
-	sub esp, 16
-	movupd [esp], xmm2
-
-	; For every digit
-	xorpd xmm0, xmm0
-	cvtsi2sd xmm2, ten
-	mov ecx, 1
-	randomLoop:
-
-		cmp ecx, 20
-			jg exitRandom
-		invoke randInt, 0, 9
-		cvtsi2sd xmm1, eax
-		
-		; Division
-		xor eax, eax
-		divisionLoop:
-			cmp eax, ecx
-				jge exitDivisionLoop
-			divsd xmm1, xmm2
-			inc eax
-			jmp divisionLoop
-
-		exitDivisionLoop:
-			addsd xmm0, xmm1
-			inc ecx
-			jmp randomLoop
-
-	exitRandom:
-		movupd xmm2, [esp]
-		add esp, 16
-		movupd xmm1, [esp]
-		add esp, 16
-		pop ecx
-		pop eax
-		ret
 
 random endp
 

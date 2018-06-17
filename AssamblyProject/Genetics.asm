@@ -89,7 +89,7 @@ initBall proc pBall: ptr Ball, pInitLoc: ptr Vector, dnaLength: dword, startRang
 initBall endp
 
 
-createPopulation proc population: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
+createPopulation proc pPopulation: dword, arraySize: dword, pInitLoc: ptr Vector, dnaLength: dword, startRange: sdword, endRange: sdword
 	
 	push ebx
 	push ecx
@@ -100,10 +100,7 @@ createPopulation proc population: dword, arraySize: dword, pInitLoc: ptr Vector,
 	createPop:
 		cmp ecx, arraySize
 			je exitCreatePopulation
-		mov ebx, population
-		mov eax, ecx
-		imul eax, Sizeof(Ball)
-		lea esi, [ebx + eax]
+		invoke getElementInArray, pPopulation, ecx, Sizeof(Ball)
 		assume esi: ptr Ball
 		invoke initBall, esi, pInitLoc, dnaLength, startRange, endRange
 		inc ecx
@@ -335,7 +332,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 fitnessFunction endp
 
 
-evaluate proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
+evaluate proc pBalls: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
 	push eax
 	push ebx
@@ -356,7 +353,7 @@ evaluate proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSiz
 	xorpd xmm1, xmm1
 	; For each ball
 	fitnessSumLoop:
-		cmp ebx, ballsSize
+		cmp ebx, populationSize
 			jge matingpoolInit
 		invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
 		assume esi: ptr Ball
@@ -375,7 +372,7 @@ evaluate proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSiz
 
 			; The number of times the ball will be in the matingpool
 			; For each ball
-			cmp ebx, ballsSize
+			cmp ebx, populationSize
 				je exitEvaluate
 			mov eax, matingpoolSize
 			cvtsi2sd xmm2, eax
@@ -437,7 +434,7 @@ mutation proc pBall: ptr Ball, mutationRate: dword, dnaLength: dword, startRange
 		cmp ecx, dnaLength
 			jge exitMutation
 
-		invoke randInt, 0, 101
+		invoke random, 0, 101
 		cmp eax, mutationRate
 			jge nextMutate
 
@@ -460,7 +457,7 @@ mutation proc pBall: ptr Ball, mutationRate: dword, dnaLength: dword, startRange
 mutation endp
 
 
-crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray: dword, index: dword, pLocation: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
+crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pPopulation: dword, index: dword, pLocation: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
@@ -470,11 +467,11 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 	push edi
 
 	; picking a random number
-	invoke randInt, 0, dnaLength
+	invoke random, 0, dnaLength
 	mov ecx, eax
 
 	; Making a new child
-	invoke getElementInArray, pArray, index, Sizeof(Ball)
+	invoke getElementInArray, pPopulation, index, Sizeof(Ball)
 
 	assume esi: ptr Ball
 	invoke initBasicBall, esi, pLocation
@@ -515,7 +512,7 @@ crossover proc pParent1: ptr Ball, pParent2: ptr Ball, dnaLength: dword, pArray:
 crossover endp
 
 
-naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, arraySize: dword, dnaLength: dword, pLocation: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
+naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pPopulation: dword, populationSize: dword, dnaLength: dword, pLocation: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
 
 	push eax
 	push ebx
@@ -526,17 +523,17 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 	xor edx, edx
 	selectionLoop:
 
-		cmp edx, arraySize
+		cmp edx, populationSize
 			jge exitNaturalSelection
 
 		; Picks a random parent from the matingpool
 		mov ecx, matingpoolSize
-		invoke randInt, 0, ecx
+		invoke random, 0, ecx
 		mov ebx, eax
 
 		; Picks another random parent from the matingpool
 		dec ecx
-		invoke randInt, 0, ecx
+		invoke random, 0, ecx
 		cmp ebx, eax ; The parents musn't be identicall
 			jge getParents ; Now if the last ball in the matingpool wasn't been chosen yet, it could still be chosen
 		inc eax
@@ -547,7 +544,7 @@ naturalSelection proc pMatingpool: dword, matingpoolSize: dword, pArray: dword, 
 			invoke getElementInArray, pMatingpool, ebx, Sizeof(Ball)
 
 		; Crossover
-		invoke crossover, ecx, esi, dnaLength, pArray, edx, pLocation, mutationRate, startRange, endRange
+		invoke crossover, ecx, esi, dnaLength, pPopulation, edx, pLocation, mutationRate, startRange, endRange
 		
 		inc edx
 		jmp selectionLoop

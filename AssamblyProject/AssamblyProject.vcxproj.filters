@@ -21,9 +21,21 @@
     <MASM Include="Genetics.asm">
       <Filter>Source Files</Filter>
     </MASM>
+    <MASM Include="Vectorator.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+    <MASM Include="Utilities.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
   </ItemGroup>
   <ItemGroup>
     <None Include="Genetics.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Vectorator.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="Utilities.inc">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

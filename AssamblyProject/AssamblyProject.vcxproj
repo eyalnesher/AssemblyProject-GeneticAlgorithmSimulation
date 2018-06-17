@@ -116,9 +116,13 @@
   <ItemGroup>
     <MASM Include="Genetics.asm" />
     <MASM Include="Source.asm" />
+    <MASM Include="Utilities.asm" />
+    <MASM Include="Vectorator.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Genetics.inc" />
+    <None Include="Utilities.inc" />
+    <None Include="Vectorator.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,13 +3,30 @@
 .code
 
 
-convertVectorIntToReal proc ptr Vector, ptr RealVector
+convertVectorIntToReal proc pInt: ptr Vector, pReal ptr RealVector
 
 	push eax
 	push ebx
+	push ecx
+	movupd [esp], xmm10
+	sub esp, 16
 
-	
+	mov eax, pInt
+	mov ebx, pReal
 
+	; X components
+	mov ecx, (Vector ptr [eax]).x
+	cvtsi2sd xmm0, ecx
+	movsd (Vector ptr [ebx]).x, xmm0
+
+	; Y components
+	mov ecx, (Vector ptr [eax]).y
+	cvtsi2sd xmm0, ecx
+	movsd (Vector ptr [ebx]).y, xmm0
+
+	movupd xmm0, [esp]
+	add esp, 16
+	pop ecx
 	pop ebx
 	pop eax
 	ret
@@ -17,8 +34,32 @@ convertVectorIntToReal proc ptr Vector, ptr RealVector
 convertVectorIntToReal endp
 
 
-convertVectorRealToInt proc pVector1: ptr Vector, pVector2: ptr Vector
+convertVectorRealToInt proc pReal: ptr Vector, pInt ptr RealVector
 
+	push eax
+	push ebx
+	push ecx
+	movupd [esp], xmm10
+	sub esp, 16
+
+	mov eax, pReal
+	mov ebx, pInt
+
+	; X components
+	movsd xmm0, (Vector ptr [eax]).x
+	cvtsd2si ecx, xmm0
+	mov (Vector ptr [ebx]).x, ecx
+
+	; Y components
+	movsd xmm0, (Vector ptr [eax]).y
+	cvtsd2si ecx, xmm0
+	mov (Vector ptr [ebx]).y, ecx
+
+	movupd xmm0, [esp]
+	add esp, 16
+	pop ecx
+	pop ebx
+	pop eax
 	ret
 
 convertVectorRealToInt endp

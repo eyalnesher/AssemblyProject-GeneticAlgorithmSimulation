@@ -6,10 +6,10 @@ include Utilities.inc
 ;----------Functions' Declaration----------;
 
 ; Convert IntVector to RealVector
-convertVectorIntToReal proto ptr Vector, ptr RealVector
+convertVectorIntToReal proto pInt: ptr Vector, pReal ptr RealVector
 
 ; Convert RealVector to IntVector 
-convertVectorRealToInt proto ptr Vector, ptr RealVector
+convertVectorRealToInt proto pReal: ptr Vector, pInt ptr RealVector
 
 ; Generate a random Vector, which is components are numbers between the given range
 generateRandomVector proto pVector: ptr Vector, startRange: sdword, endRange: sdword

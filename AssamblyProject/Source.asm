@@ -12,6 +12,7 @@ Sleep proto :dword
 
 	location Vector <50, 300>
 	target Vector <900, 300>
+	obstacle Vector<450, 150>
 
 	startRange dword -1
 	endRange dword 2
@@ -33,6 +34,11 @@ Sleep proto :dword
 	; Pictures
 	pimg Img<>
 	targetImg Img<>
+	obstacleImg Img<>
+
+	ballName byte "ball.bmp", 0
+	targetName byte "target.bmp", 0
+	obstacleName byte "obstacle.bmp", 0
 
 	balls Ball arrayLength dup(<>)
 	matingpool Ball matingpoolLength dup(<>)
@@ -41,8 +47,6 @@ Sleep proto :dword
 	
 	x dword 1
 	y dword 0
-	ballName byte "ball.bmp", 0
-	targetName byte "target.bmp", 0
 	looper dword 5
 	slower byte 100
 	steps byte ?
@@ -61,6 +65,7 @@ main proc
 	invoke drd_init, screenSizeX, screenSizeY, 0
 	invoke drd_imageLoadFile, offset ballName, offset pimg
 	invoke drd_imageLoadFile, offset targetName, offset targetImg
+	invoke drd_imageLoadFile, offset obstacleName, offset obstacleImg
 	invoke drd_imageSetTransparent, offset pimg, 0
 	invoke drd_imageSetTransparent, offset targetImg, 0
 
@@ -96,6 +101,7 @@ main proc
 				invoke drd_processMessages
 				invoke drd_imageDraw, offset pimg, dword ptr [esi], dword ptr [esi + 4]
 				invoke drd_imageDraw, offset targetImg, target.x, target.y
+				invoke drd_imageDraw, offset obstacleImg, obstacle.x, obstacle.y
 				invoke drd_flip
 
 				; Moving

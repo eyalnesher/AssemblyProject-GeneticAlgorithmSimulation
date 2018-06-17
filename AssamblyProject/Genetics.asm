@@ -335,46 +335,7 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 fitnessFunction endp
 
 
-evaluate proc pPopulation: dword, pTarget: ptr Vector
-
-	push ebx
-	sub esp, 16
-	movupd  xmmword ptr [esp], xmm0
-	sub esp, 16
-	movupd  xmmword ptr [esp], xmm1
-	sub esp, 16
-	movupd  xmmword ptr [esp], xmm2
-
-	xor ebx, ebx
-	invoke random
-	movsd xmm1, xmm0
-	xorpd xmm2, xmm2
-	
-	pickingLoop:
-		comisd xmm1, xmm2
-			jbe exitEvaluate
-		invoke getElementInArray, pPopulation, ebx, Sizeof(Ball)
-		assume esi: ptr Ball
-		invoke fitnessFunction, esi, pTarget
-		divsd xmm0, xmm3 ; Normalizing the fitness value
-		subsd xmm1, xmm0
-		inc ebx
-		jmp pickingLoop
-
-	exitEvaluate:
-		movupd xmm2, [esp]
-		add esp, 16
-		movupd xmm1, [esp]
-		add esp, 16
-		movupd xmm0, [esp]
-		add esp, 16
-		pop ebx
-		ret
-
-evaluate endp
-
-
-initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
+evaluate proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
 	push eax
 	push ebx
@@ -415,7 +376,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 			; The number of times the ball will be in the matingpool
 			; For each ball
 			cmp ebx, ballsSize
-				je exitinitMatingpool
+				je exitEvaluate
 			mov eax, matingpoolSize
 			cvtsi2sd xmm2, eax
 			invoke getElementInArray, pBalls, ebx, Sizeof(Ball)
@@ -442,7 +403,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 				inc ebx
 				jmp BallLoop
 
-	exitinitMatingpool:
+	exitEvaluate:
 		movupd xmm3, [esp]
 		add esp, 16
 		movupd xmm2, [esp]
@@ -458,7 +419,7 @@ initMatingpool proc pBalls: dword, ballsSize: dword, pMatingpool: dword, matingp
 		pop eax
 		ret
 
-initMatingpool endp
+evaluate endp
 
 
 mutation proc pBall: ptr Ball, mutationRate: dword, dnaLength: dword, startRange: dword, endRange: dword
@@ -604,7 +565,7 @@ naturalSelection endp
 
 evolve proc pPopulation: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, dnaLength: dword, pLocation: ptr Vector, pTarget: ptr Vector, mutationRate: sdword, startRange: sdword, endRange: sdword
 
-	invoke initMatingpool, pPopulation, populationSize, pMatingpool, matingpoolSize, pTarget
+	invoke evaluate, pPopulation, populationSize, pMatingpool, matingpoolSize, pTarget
 	invoke naturalSelection, pMatingpool, matingpoolSize, pPopulation, populationSize, dnaLength, pLocation, mutationRate, startRange, endRange
 	ret
 

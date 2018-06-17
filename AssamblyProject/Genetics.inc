@@ -33,12 +33,8 @@ update proto pBall: ptr Ball, forceIndex: dword, pTarget: ptr Vector, radios: dw
 ; Calculate the fitness of the given ball
 fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
 
-; Picks a parent depends on his fitness
-; Assumption: in xmm3 there is the sum of all the fitness values
-evaluate proto pPopulation: dword, pTarget: ptr Vector
-
 ; Initialize the matingpool using the balls fitness
-initMatingpool proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
+evaluate proto pBalls: dword, ballsSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
 ; Mutation. mutationRate is an integer between 0 and 100
 mutation proto pBall: ptr Ball, mutationRate: dword, dnaLength: dword, startRange: dword, endRange: dword

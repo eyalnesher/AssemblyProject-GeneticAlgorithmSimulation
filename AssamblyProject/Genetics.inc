@@ -59,6 +59,9 @@ update proto pBall: ptr Ball, forceIndex: dword, pTarget: ptr Vector, radios: dw
 ; pTraget - the offset of the target
 fitnessFunction proto pBall: ptr Ball, pTarget: ptr Vector
 
+; Calculate the maximum fitness of a population
+maxFitness proto pPopulation: dword, populationSize: dword , pTarget: ptr Vector
+
 ; Initialize the matingpool using the balls fitness values
 ; pPopulation - the offset of the array of balls representing the population
 ; populationSize - the size of the population

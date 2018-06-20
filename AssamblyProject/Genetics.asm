@@ -332,6 +332,38 @@ fitnessFunction proc pBall: ptr Ball, pTarget: ptr Vector
 fitnessFunction endp
 
 
+maxFitness proc pPopulation: dword, populationSize: dword , pTarget: ptr Vector
+
+	push ecx
+	sub esp, 16
+	movupd [esp], xmm1
+
+	xor ecx, ecx
+	xorpd xmm1, xmm1
+	maxFitnessLoop:
+		cmp ecx, populationSize
+			jge maxFitnessExit
+		invoke getElementInArray, pPopulation, ecx, Sizeof(Ball)
+		assume esi: ptr Ball
+		invoke fitnessFunction, esi, pTarget
+		comisd xmm1, xmm0
+			jge nextMax
+		movsd xmm1, xmm0
+
+		nextMax:
+			inc ecx
+			jmp maxFitnessLoop
+
+	maxFitnessExit:
+		movsd xmm0, xmm1
+		sub esp, 16
+		movupd [esp], xmm1
+		pop ecx
+		ret
+
+maxFitness endp
+
+
 evaluate proc pBalls: dword, populationSize: dword, pMatingpool: dword, matingpoolSize: dword, pTarget: ptr Vector
 
 	push eax
